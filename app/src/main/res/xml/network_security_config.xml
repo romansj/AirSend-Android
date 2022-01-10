@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config>
+        <domain includeSubdomains="true">localhost</domain>
+        <!--        <domain includeSubdomains="true">192.168.1.105</domain>-->
+        <!--        <domain includeSubdomains="true">192.168.1.104</domain>-->
+        <!--        <domain includeSubdomains="true">192.168.1.101</domain>-->
+
+        <trust-anchors>
+            <!--            <certificates src="@raw/clientcainternal" />-->
+            <!--            <certificates src="@raw/servercainternal" />-->
+            <!--            <certificates src="@raw/priv" />-->
+            <!--            <certificates src="@raw/pub" />-->
+            <certificates src="@raw/xca" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config>

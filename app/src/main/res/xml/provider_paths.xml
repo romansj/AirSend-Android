@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!--TODO QR saving -> set to cache if using getExternalCacheDir() instead of getExternalFilesDir() - check Main and FragExport-->
+    <!--<external-path-->
+    <!--name="external_files"-->
+    <!--path="Android/data/com.jromans.notes/files" />-->
+    <!--    <external-path-->
+    <!--        name="external_files"-->
+    <!--        path="Android/data/com.jromans.notes/cache" />-->
+    <external-path
+        name="Download"
+        path="Download/" />
+</paths>

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="@dimen/large"
+    app:cardElevation="@dimen/card_elevation">
+
+    <!--
+        app:strokeColor="?dividerColor"
+        app:strokeWidth="1dp"
+
+
+    -->
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/large">
+
+        <ImageView
+            android:id="@+id/image_view"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="@dimen/medium"
+            android:paddingBottom="@dimen/medium"
+            android:paddingStart="@dimen/medium"
+            android:paddingEnd="@dimen/medium"
+            android:src="@drawable/device" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_name"
+                style="@style/TextAppearance.MaterialComponents.Body1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/small"
+                android:text="DESKTOP-i7K" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_ip"
+                    style="@style/TextAppearance.MaterialComponents.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/large"
+                    android:text="192.168.1.100" />
+
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/tv_connection_type"
+                    style="@style/TextAppearance.MaterialComponents.Caption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium"
+                    android:layout_marginEnd="@dimen/medium"
+                    android:text="A/W" />
+
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_server_running"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="server r" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_connect_disconnect"
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:tooltipText="Disconnect"
+                android:layout_marginEnd="@dimen/small"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:icon="@drawable/link_off" />
+
+            <com.google.android.material.button.MaterialButton
+                android:visibility="gone"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:insetLeft="0dp"
+                android:insetTop="0dp"
+                android:insetRight="0dp"
+                android:insetBottom="0dp"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                android:tooltipText="Delete"
+                android:id="@+id/btn_delete"
+                app:icon="@drawable/delete" />
+
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

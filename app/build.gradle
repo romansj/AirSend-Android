@@ -1,0 +1,224 @@
+apply plugin: 'com.android.application'
+
+
+def apikeyPropertiesFile = rootProject.file("keys.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
+
+android {
+    compileSdkVersion 31
+    buildToolsVersion '30.0.3'
+
+    defaultConfig {
+        configurations.all {
+            resolutionStrategy { force 'androidx.core:core:1.6.0' }
+        }
+        applicationId "com.cherrydev.airsend"
+        minSdkVersion 26
+        targetSdkVersion 30
+        versionCode 6
+        versionName "6.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+
+        buildConfigField("String", "CERT_KEY", apikeyProperties['CERT_KEY'])
+
+        // so espresso doesn't wait arbitrary amount of time and crash
+        testOptions {
+            animationsDisabled = true
+        }
+    }
+
+    buildTypes {
+        debug {
+            //for instrumented test coverage reporting
+            testCoverageEnabled = true
+
+            //debuggable true
+            shrinkResources false
+            minifyEnabled false
+            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+
+        unitTests.all {
+            useJUnitPlatform() // <--- this is the important part
+        }
+    }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+//    implementation 'androidx.core:core-ktx:1.3.2'
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.4.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.5'
+    implementation 'androidx.navigation:navigation-ui:2.3.5'
+
+
+    //region  *******************************
+    implementation 'xmlpull:xmlpull:1.1.3.4d_b4_min'
+
+
+    testImplementation "org.junit.vintage:junit-vintage-engine:5.7.1"
+
+
+    // jUnit
+    def jupiter = '5.7.1'
+    testImplementation "org.junit.jupiter:junit-jupiter-params:$jupiter"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter"
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation "org.junit.jupiter:junit-jupiter-params:$jupiter"
+    androidTestRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter"
+    androidTestImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter"
+    androidTestImplementation 'junit:junit:4.13.2'
+
+
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'org.junit.jupiter:junit-jupiter'
+
+
+    //mocking, commented out to prevent double import of one file (cant mock in instrumentation with the commented items)
+//    testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
+//    testImplementation 'org.powermock:powermock-module-junit4-rule:2.0.9'
+//    testImplementation 'org.powermock:powermock-api-mockito:1.7.4'
+//    testImplementation 'org.powermock:powermock-classloading-xstream:2.0.9'
+////    testImplementation 'org.mockito:mockito-core:3.11.0'
+//    androidTestImplementation 'org.powermock:powermock-api-mockito:1.7.4'
+//    androidTestImplementation 'org.powermock:powermock-classloading-xstream:2.0.9'
+//    androidTestImplementation 'org.powermock:powermock-module-junit4:2.0.9'
+//    androidTestImplementation 'org.powermock:powermock-module-junit4-rule:2.0.9'
+
+    androidTestImplementation "org.mockito:mockito-core:3.11.0"
+    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.25.0'
+
+
+    //androidx test
+    testImplementation('androidx.test:core:1.4.0') {
+        exclude group: 'xpp3', module: 'xpp3'
+    }
+    androidTestImplementation('androidx.test:core:1.4.0') {
+        exclude group: 'xpp3', module: 'xpp3'
+    }
+
+    androidTestUtil 'androidx.test:orchestrator:1.4.1'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
+
+
+    //testing framework
+    // well, cannot run Espresso because of these imports. https://stackoverflow.com/a/63768995/4673960 .
+    // Should not be throwing errors, but it is.
+    //testImplementation "org.robolectric:robolectric:4.5.1"
+//    androidTestImplementation ("org.robolectric:robolectric:4.5.1") {
+//        exclude group: "org.apache.maven.wagon"
+//        exclude group: "org.apache.maven"
+//    }
+    androidTestImplementation 'org.hamcrest:hamcrest-library:2.2'
+
+
+    //truth, assertions
+    androidTestImplementation 'androidx.test.ext:truth:1.4.0'
+    androidTestImplementation 'com.google.truth:truth:1.1.3'
+    //testImplementation 'androidx.test.ext:truth:1.3.0'
+    testImplementation 'com.google.truth:truth:1.1.3'
+
+
+    // Espresso dependencies
+    def espresso_version = '3.3.0'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-accessibility:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
+    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:$espresso_version"
+    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$espresso_version"
+
+
+    //endregion *******************************
+
+
+    implementation 'com.google.android.material:material:1.4.0'
+
+
+    implementation 'androidx.fragment:fragment:1.4.0'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
+
+    def lifecycle_version = "2.2.0"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycle_version"
+
+
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+
+
+    implementation 'com.github.kenglxn.QRGen:android:2.6.0'
+
+
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+    implementation 'com.github.T-Spoon:Benchit:v1.0.2'
+
+
+    //for TLS 1.3 on Android versions < 29
+    implementation 'org.conscrypt:conscrypt-android:2.5.1'
+    implementation 'com.google.android.gms:play-services-auth:20.0.1'
+
+
+    def room_version = "2.3.0"
+    implementation "androidx.room:room-runtime:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-rxjava3:$room_version"
+
+
+    implementation 'io.reactivex.rxjava3:rxandroid:3.0.0'
+    // Because RxAndroid releases are few and far between, it is recommended you also
+    // explicitly depend on RxJava's latest version for bug fixes and new features.
+    // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
+    implementation 'io.reactivex.rxjava3:rxjava:3.0.3'
+    implementation 'com.jakewharton.rxbinding4:rxbinding:4.0.0'
+
+
+    implementation("com.google.guava:guava:31.0.1-android")
+
+
+    implementation project(':app:common')
+    implementation project(':app:file')
+    implementation project(':app:time')
+}
+
