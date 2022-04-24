@@ -6,7 +6,7 @@ import android.annotation.SuppressLint;
 import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
 
-import com.cherrydev.airsend.app.service.ClientManagerOwnerProperties;
+import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.app.utils.mymodels.ObservableSubject;
 import com.cherrydev.airsend.core.ClientMessage;
 import com.cherrydev.airsend.core.MessageType;
@@ -56,7 +56,11 @@ public class ClientManager {
             Timber.d("client says " + clientResult.toString());
 
             if (clientResult.isClientRunning()) {
-                if (clientHandler != null) clientHandler.updateClient(message.getIP(), message.isKill() ? Status.NOT_RUNNING : Status.RUNNING);
+                if (clientHandler != null) clientHandler.updateClient(
+                        message.getIP(),
+                        message.isKill() ? Status.NOT_RUNNING : Status.RUNNING,
+                        clientResult.getTextResponse()
+                );
 
             } else {
                 threadInfoList.remove(message.getIP()); //can't reuse Thread class
@@ -70,7 +74,7 @@ public class ClientManager {
             //throwable only when timeout
 
             throwable.printStackTrace();
-            if (clientHandler != null) clientHandler.updateClient(message.getIP(), Status.NOT_RUNNING);
+            if (clientHandler != null) clientHandler.updateClient(message.getIP(), Status.NOT_RUNNING, null);
 
             threadInfoList.remove(runningClient.getIP()); //can't reuse Thread class
         });
@@ -78,7 +82,7 @@ public class ClientManager {
 
     private void retryOrFail(ClientMessage message, ClientResult clientResult) {
         if (clientResult.getThrowable() == null || message.isKill()) {
-            if (clientHandler != null) clientHandler.updateClient(message.getIP(), Status.NOT_RUNNING);
+            if (clientHandler != null) clientHandler.updateClient(message.getIP(), Status.NOT_RUNNING, clientResult.getTextResponse());
             return;
         }
 
@@ -91,7 +95,7 @@ public class ClientManager {
             Timber.d("sent retry, result was: " + clientResult + ", retryCount: " + newRetryCount);
 
         } else {
-            if (clientHandler != null) clientHandler.updateClient(message.getIP(), Status.NOT_RUNNING);
+            if (clientHandler != null) clientHandler.updateClient(message.getIP(), Status.NOT_RUNNING, clientResult.getTextResponse());
             Timber.d("stopped trying, result was: " + clientResult + ", retryCount: " + retryCount);
         }
 
@@ -152,7 +156,7 @@ public class ClientManager {
 
 
     public void connect(String ip, int port) {
-        sendMessage(new ClientMessage(ip, port, getOwnerProperties(), MessageType.CONNECT));
+        sendMessage(new ClientMessage(ip, port, ownerProperties.getOwnerPropertiesString(), MessageType.CONNECT));
     }
 
 
@@ -162,7 +166,7 @@ public class ClientManager {
 
 
     public void disconnect(String ip, int port, boolean awaitResponse) {
-        var clientMessage = new ClientMessage(ip, port, getOwnerProperties(), MessageType.DISCONNECT);
+        var clientMessage = new ClientMessage(ip, port, ownerProperties.getOwnerPropertiesString(), MessageType.DISCONNECT);
         clientMessage.setAwaitResponse(awaitResponse);
         sendMessage(clientMessage);
     }
@@ -208,10 +212,7 @@ public class ClientManager {
         this.clientHandler = clientHandler;
     }
 
-    @NonNull
-    private String getOwnerProperties() {
-        return ownerProperties.getPort() + "," + ownerProperties.getClientType() + "," + ownerProperties.getName();
-    }
+
 
     public void setMaxRetries(int maxRetries) {
         MAX_RETRIES = maxRetries;

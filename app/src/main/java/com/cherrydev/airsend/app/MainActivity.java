@@ -5,12 +5,10 @@ import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -23,11 +21,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
-import com.cherrydev.airsend.app.service.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.app.service.ServerService;
 import com.cherrydev.airsend.app.utils.AppUtils;
 import com.cherrydev.airsend.app.utils.IntentAction;
 import com.cherrydev.airsend.app.utils.NavUtils;
+import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.core.client.ClientManager;
 import com.cherrydev.airsend.databinding.ActivityMainBinding;
 import com.cherrydev.common.MimeTypes;
@@ -124,9 +122,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAvailable(Network network) {
                 Timber.d("ClientSSL " + "The default network is now: " + network);
 
-                SharedPreferences sharedPref = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-                String settingDeviceName = sharedPref.getString(getString(R.string.setting_device_name), Build.MODEL);
-                ClientManagerOwnerProperties ownerProperties = new ClientManagerOwnerProperties(ServerService.getPORT(), settingDeviceName, "A");
+                var ownerProperties = ClientManagerOwnerProperties. getOwnerProperties(MainActivity.this);
                 ClientManager.getInstance().setOwnerProperties(ownerProperties);
 
                 databaseManager.getDb().getAllDevices().subscribeOn(Schedulers.io()).subscribe(devices -> {

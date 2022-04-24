@@ -9,7 +9,6 @@ import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.cherrydev.airsend.app.service.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.core.client.ClientManager;
 import com.cherrydev.airsend.core.server.ServerManager;

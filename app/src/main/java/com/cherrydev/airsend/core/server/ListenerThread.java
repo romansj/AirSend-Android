@@ -1,5 +1,6 @@
 package com.cherrydev.airsend.core.server;
 
+import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.app.utils.mymodels.ObservableSubject;
 import com.cherrydev.airsend.core.ClientMessage;
 import com.cherrydev.airsend.core.utils.SSLUtils;
@@ -25,6 +26,7 @@ class ListenerThread extends Thread {
     private ObservableSubject<ClientMessage> serverMessageCallback;
     private ObservableSubject<ServerMessage> serverEventCallback;
     private boolean connectionListenerRunning = true;
+    private ClientManagerOwnerProperties ownerProperties;
 
     public ListenerThread(int port, ObservableSubject<ClientMessage> serverCallback, ObservableSubject<ServerMessage> serverEventCallback) {
         this.serverThreadList = new ArrayList<>();
@@ -60,6 +62,7 @@ class ListenerThread extends Thread {
                 Timber.d("sslSocket accepted");
 
                 ServerThread serverThread = new ServerThread(sslSocket, serverEventCallback, serverMessageCallback, localPort);
+                serverThread.setOwnerProperties(ownerProperties);
                 serverThread.start();
                 serverThreadList.add(serverThread);
             }
@@ -103,5 +106,9 @@ class ListenerThread extends Thread {
         } catch (NullPointerException | IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setOwnerProperties(ClientManagerOwnerProperties ownerProperties) {
+        this.ownerProperties=ownerProperties;
     }
 }

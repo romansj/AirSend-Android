@@ -83,12 +83,6 @@ public class FragmentMessages extends Fragment {
         initMessageSending();
 
 
-        MaterialButton btnPasteIP = binding.btnPaste;
-        btnPasteIP.setOnClickListener(v -> {
-            String clipboardText = ClipboardUtils.getClipboardText(MyApplication.getInstance());
-            if (!clipboardText.isEmpty()) binding.etRecipientIp.setText(clipboardText);
-        });
-
         MaterialButton btnPasteMessage = binding.btnPasteMsg;
         btnPasteMessage.setOnClickListener(v -> {
             String clipboardText = ClipboardUtils.getClipboardText(MyApplication.getInstance());

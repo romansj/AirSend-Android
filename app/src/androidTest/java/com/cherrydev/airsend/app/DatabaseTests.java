@@ -18,7 +18,7 @@ import com.cherrydev.airsend.app.database.DbDao;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.UserMessage;
 import com.cherrydev.airsend.core.MessageType;
-import com.cherrydev.time.MyTimeUtils;
+import com.cherrydev.time.CommonTimeUtils;
 
 import org.junit.After;
 import org.junit.Before;
@@ -128,7 +128,7 @@ public class DatabaseTests {
         int port = 0;
         String text = textStr;
         MessageType type = MessageType.MESSAGE;
-        String dateTime = MyTimeUtils.toFormattedDateTimeString(LocalDateTime.now(), true);
+        String dateTime = CommonTimeUtils.Format.toFormattedDateTimeString(LocalDateTime.now(), true);
         return new UserMessage(ip, port, text, type, dateTime);
     }
 
@@ -137,7 +137,7 @@ public class DatabaseTests {
         int port = 0;
         String text = textStr;
         MessageType type = MessageType.MESSAGE;
-        String dateTime = MyTimeUtils.toFormattedDateTimeString(LocalDateTime.now(), true);
+        String dateTime = CommonTimeUtils.Format.toFormattedDateTimeString(LocalDateTime.now(), true);
         return new UserMessage(ip, port, text, type, dateTime);
     }
 

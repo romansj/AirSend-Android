@@ -7,6 +7,6 @@ include ':app:file'
 include ':app:time'
 
 
-project(':app:common').projectDir = file('C:\\AndroidProjects\\CommonTools\\app\\common')
-project(':app:file').projectDir = file('C:\\AndroidProjects\\CommonTools\\app\\file')
-project(':app:time').projectDir = file('C:\\AndroidProjects\\CommonTools\\app\\time')
+project(':app:common').projectDir = file('C:\\AndroidProjects\\CommonTools\\common')
+project(':app:file').projectDir = file('C:\\AndroidProjects\\CommonTools\\file')
+project(':app:time').projectDir = file('C:\\AndroidProjects\\CommonTools\\time')

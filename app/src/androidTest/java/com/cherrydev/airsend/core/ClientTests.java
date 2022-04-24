@@ -14,7 +14,6 @@ import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
-import com.cherrydev.airsend.app.service.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.core.client.ClientManager;
 
@@ -97,7 +96,7 @@ public class ClientTests {
         clientManager.messageClient(ip, port, "Hello");
         verify(clientHandler, after(500)
                 .atMost(2))
-                .updateClient(ip, Status.NOT_RUNNING);
+                .updateClient(ip, Status.NOT_RUNNING, null);
         // 2 : first for connect() and second for message() -- because verify() will capture both
     }
 
@@ -115,7 +114,7 @@ public class ClientTests {
 
         clientManager.disconnect(ip, port);
         //verify(clientHandler, after(500).atMost(4)).addClient(ip, port);
-        verify(clientHandler, after(500)).updateClient(ip, Status.NOT_RUNNING);
+        verify(clientHandler, after(500)).updateClient(ip, Status.NOT_RUNNING, null);
     }
 
     @NonNull

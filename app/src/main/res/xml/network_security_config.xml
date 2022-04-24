@@ -11,7 +11,7 @@
             <!--            <certificates src="@raw/servercainternal" />-->
             <!--            <certificates src="@raw/priv" />-->
             <!--            <certificates src="@raw/pub" />-->
-            <certificates src="@raw/xca" />
+            <certificates src="@raw/cherrydev" />
         </trust-anchors>
     </domain-config>
 </network-security-config>

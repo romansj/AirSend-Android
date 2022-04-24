@@ -1,9 +1,11 @@
 package com.cherrydev.airsend.core.server;
 
 import com.cherrydev.airsend.app.utils.mymodels.ObservableSubject;
+import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.core.ClientMessage;
 import com.cherrydev.airsend.core.Constants;
 import com.cherrydev.airsend.core.ReceivedConverter;
+import com.cherrydev.airsend.core.utils.SSLUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -27,6 +29,8 @@ public class ServerThread extends Thread {
     private ObservableSubject<ServerMessage> serverCallback;
     private ObservableSubject<ClientMessage> serverMessageCallback;
     private boolean serverRunning;
+    private ClientManagerOwnerProperties ownerProperties;
+
 
     ServerThread(SSLSocket sslSocket, ObservableSubject<ServerMessage> serverCallback, ObservableSubject<ClientMessage> serverMessageCallback, int port) {
         this.sslSocket = sslSocket;
@@ -78,30 +82,30 @@ public class ServerThread extends Thread {
                 Timber.d("run: while (true)");
                 StringBuilder builder = new StringBuilder();
 
+                // unfortunately have to read character by character, because for an unknown reason in January 2022 previous code started failing
+                // instead of stopping reading, it would continue forever reading an empty line, so in effect a message would never be received.
                 int read;
                 while ((read = bufferedReader.read()) != -1) {
-
                     char c = (char) read;
                     builder.append(c);
 
                     if (builder.toString().contains(Constants.EOF)) break;
                 }
 
-                if (read == -1) {
-                    break;
-                }
+                if (read == -1) break; // reached end of stream
+
+
+                // need to acknowledge message arrival, which other side is waiting for
+                printWriter.print("HTTP/1.1 200" + ownerProperties.getOwnerPropertiesString() + "\r\n");
+                printWriter.flush();
 
 
                 String mssg = builder.toString();
 
-                printWriter.print("HTTP/1.1 200\r\n");
-                printWriter.flush();
 
-
-                //String mssg = builder.toString();
                 Timber.d("textToShow " + mssg.trim());
                 //if (!mssg.trim().isEmpty()) {
-                ClientMessage reconstructedMessage = ReceivedConverter.fromReceived(mssg, sslSocket.getInetAddress().toString().substring(1), port);
+                ClientMessage reconstructedMessage = ReceivedConverter.fromReceived(mssg, SSLUtils.getSocketIPAddress(sslSocket), port);
                 serverMessageCallback.setValue(reconstructedMessage);
                 //}
 
@@ -144,5 +148,10 @@ public class ServerThread extends Thread {
 
 
         serverCallback.setValue(new ServerMessage(ServerOperation.STOP, port));
+    }
+
+
+    public void setOwnerProperties(ClientManagerOwnerProperties ownerProperties) {
+        this.ownerProperties = ownerProperties;
     }
 }

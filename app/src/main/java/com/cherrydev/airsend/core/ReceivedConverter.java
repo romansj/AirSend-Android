@@ -1,6 +1,6 @@
 package com.cherrydev.airsend.core;
 
-import com.cherrydev.time.MyTimeUtils;
+import com.cherrydev.time.CommonTimeUtils;
 
 import java.time.LocalDateTime;
 
@@ -9,7 +9,7 @@ public class ReceivedConverter {
         MessageType messageType = typeFromReceived(received);
         String message = userMessageFromReceived(received, messageType);
         LocalDateTime datetimeNow = LocalDateTime.now();
-        ClientMessage clientMessage = new ClientMessage(ipAddress, port, received, message, messageType, MyTimeUtils.toFormattedDateTimeString(datetimeNow, true));
+        ClientMessage clientMessage = new ClientMessage(ipAddress, port, received, message, messageType, CommonTimeUtils.Format.toFormattedDateTimeString(datetimeNow, true));
         return clientMessage;
     }
 

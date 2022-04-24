@@ -21,119 +21,59 @@
             android:text="Outgoing messages"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/et_port"
-                android:layout_width="80dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/port"
-                android:visibility="gone" />
-
-            <com.cherrydev.common.models.InstantAutoComplete
-                android:id="@+id/et_recipient_ip"
+            <TextView
+                style="@style/TextAppearance.MaterialComponents.Caption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="Receiver's IP address"
-                android:visibility="gone" />
-
+                android:layout_marginBottom="@dimen/small"
+                android:text="Select recipient" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Caption"
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/dropdown_recipient"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/small"
-                    android:text="Select recipient" />
+                    android:layout_marginBottom="@dimen/medium"
+                    android:layout_weight="1"
+                    app:hintEnabled="false">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/dropdown_recipient"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    <AutoCompleteTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/medium"
-                        android:layout_marginBottom="@dimen/medium"
-                        android:layout_weight="1"
-                        app:hintEnabled="false">
+                        android:inputType="none" />
 
-                        <AutoCompleteTextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btn_pick_recipient"
-                        style="@style/Widget.MaterialComponents.Button.TextButton"
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        android:insetLeft="0dp"
-                        android:insetTop="0dp"
-                        android:insetRight="0dp"
-                        android:insetBottom="0dp"
-                        android:tooltipText="Select recipient"
-                        android:visibility="gone"
-                        app:icon="@drawable/device"
-                        app:iconGravity="textStart"
-                        app:iconPadding="0dp" />
-                </LinearLayout>
-
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_pick_recipient"
+                    style="@style/Button.IconOnly"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:tooltipText="Select recipient"
+                    android:visibility="gone"
+                    app:icon="@drawable/device" />
 
             </LinearLayout>
 
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_paste"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
-                android:tooltipText="Paste text into address field"
-                android:visibility="gone"
-                app:icon="@drawable/paste"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/scan_qr"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
-                android:tooltipText="Scan QR code"
-                android:visibility="gone"
-                app:icon="@drawable/qrcode_scan"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp" />
-
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/medium"
-            android:gravity="bottom"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -141,7 +81,6 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/medium"
                 android:layout_weight="1"
                 app:hintEnabled="false">
 
@@ -157,25 +96,20 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_paste_msg"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Button.IconOnly"
                 android:layout_width="52dp"
                 android:layout_height="52dp"
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
                 android:tooltipText="Paste text into message field"
-                app:icon="@drawable/paste"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp" />
+                app:icon="@drawable/paste" />
 
         </LinearLayout>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/send"
+            style="@style/Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="60dp"
+            android:minHeight="52dp"
             android:text="@string/send"
             app:icon="@drawable/ic_baseline_send_24"
             app:iconGravity="end" />
@@ -195,17 +129,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_delete_messages"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                style="@style/Button.IconOnly"
                 android:layout_width="52dp"
                 android:layout_height="52dp"
-                android:layout_marginStart="@dimen/medium"
-                android:insetLeft="0dp"
-                android:insetTop="0dp"
-                android:insetRight="0dp"
-                android:insetBottom="0dp"
-                app:icon="@drawable/delete"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp" />
+                app:icon="@drawable/delete" />
 
         </LinearLayout>
 
@@ -226,9 +153,9 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:id="@+id/tv_empty_rv_messages"
             style="@style/TextAppearance.MaterialComponents.Caption"
             android:layout_width="wrap_content"
-            android:id="@+id/tv_empty_rv_messages"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/no_messages_yet" />

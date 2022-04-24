@@ -1,6 +1,7 @@
 package com.cherrydev.airsend.core.server;
 
 
+import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.app.utils.mymodels.ObservableSubject;
 import com.cherrydev.airsend.core.ClientMessage;
 import com.cherrydev.airsend.core.utils.RxHelper;
@@ -16,6 +17,7 @@ public class ServerManager {
 
     private static ServerManager INSTANCE;
     private ObservableSubject<ServerMessage> observableMessageEvent;
+    private ClientManagerOwnerProperties ownerProperties;
 
     public Observable<ServerMessage> getObservableMessageEvent() {
         return observableMessageEvent.getObservable();
@@ -52,6 +54,7 @@ public class ServerManager {
         observableMessageEvent = new ObservableSubject<>();
 
         ListenerThread connectionListenerThread = new ListenerThread(port, observableMessage, observableMessageEvent);
+        connectionListenerThread.setOwnerProperties(ownerProperties);
         connectionListenerThread.start();
 
 
@@ -92,4 +95,8 @@ public class ServerManager {
 
     //here instead of IP, will identify each thread by port its listening on
     private Map<Integer, ListenerThread> threadInfoList = new HashMap<>();
+
+    public void setOwnerProperties(ClientManagerOwnerProperties ownerProperties) {
+        this.ownerProperties=ownerProperties;
+    }
 }

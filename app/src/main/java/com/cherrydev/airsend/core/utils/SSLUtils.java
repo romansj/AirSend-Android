@@ -21,7 +21,7 @@ public class SSLUtils {
     public static SSLContext createSSLContext() {
         try {
             KeyStore keyStore = KeyStore.getInstance("BKS");
-            InputStream stream = MyApplication.getInstance().getResources().openRawResource(R.raw.xca);
+            InputStream stream = MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev);
             keyStore.load(stream, BuildConfig.CERT_KEY.toCharArray());
 
             stream.close();
@@ -65,4 +65,10 @@ public class SSLUtils {
 
         return stringBuilder.toString();
     }
+
+
+   public static String  getSocketIPAddress(SSLSocket sslSocket){
+       var ip = sslSocket.getInetAddress().toString().substring(1);
+       return ip;
+   }
 }

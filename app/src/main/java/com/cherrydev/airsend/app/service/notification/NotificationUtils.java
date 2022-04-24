@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.graphics.drawable.Icon;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -18,6 +19,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class NotificationUtils {
+
+    public static final String DEFAULT_TITLE = "getText(R.string.notification_title)";
+    public static final String DEFAULT_TEXT = "getText(R.string.notification_message)";
+    public static final int DEFAULT_DRAWABLE_ID = R.drawable.arrow_up;
+
+
+    public static String CHANNEL_ID = "0";
+    public static String CHANNEL_ID_ONGOING = "1";
+
+    public static final int ONGOING_NOTIFICATION_ID = 1;
+    private static int NOTIFICATION_ID = 2;
 
 
     public static void initNotificationChannels() {
@@ -35,7 +47,7 @@ public class NotificationUtils {
 
 
     public static void showNotification(String title, String description) {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(MyApplication.getInstance().getApplicationContext(), CHANNEL_ID)
+        Notification.Builder builder = new Notification.Builder(MyApplication.getInstance().getApplicationContext(), CHANNEL_ID)
                 .setSmallIcon(R.drawable.message_outline)
                 .setContentTitle(title)
                 .setContentText(description)
@@ -43,7 +55,6 @@ public class NotificationUtils {
                 .setChannelId(CHANNEL_ID);
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(MyApplication.getInstance());
-
         // notificationId is a unique int for each notification that you must define
         NOTIFICATION_ID++;
         notificationManager.notify(NOTIFICATION_ID, builder.build());
@@ -56,18 +67,6 @@ public class NotificationUtils {
         for (int i = 0; i <= NOTIFICATION_ID; i++) notificationManager.cancel(i);
     }
 
-
-    public static final String DEFAULT_TITLE = "getText(R.string.notification_title)";
-    public static final String DEFAULT_TEXT = "getText(R.string.notification_message)";
-    public static final int DEFAULT_DRAWABLE_ID = R.drawable.arrow_up;
-
-
-    public static String CHANNEL_ID = "0";
-    public static String CHANNEL_ID_ONGOING = "1";
-
-    public static final int ONGOING_NOTIFICATION_ID = 1;
-    private static int NOTIFICATION_ID = 2;
-
     public static Notification getNotification(PendingIntent pendingIntent, String channelID) {
         return getNotification(pendingIntent, channelID, DEFAULT_TITLE, DEFAULT_TEXT, DEFAULT_DRAWABLE_ID);
     }
@@ -77,8 +76,7 @@ public class NotificationUtils {
     }
 
     public static Notification getNotification(PendingIntent pendingIntent, String channelID, String title, String text, int drawable) {
-        Notification notification = getNotification(pendingIntent, channelID, title, text, drawable, Collections.emptyList());
-        return notification;
+        return getNotification(pendingIntent, channelID, title, text, drawable, Collections.emptyList());
     }
 
     public static <T extends NotificationAction> Notification getNotification(PendingIntent pendingIntent, String channelID, String title, String text, int drawable, List<T> actionList) {
@@ -88,24 +86,25 @@ public class NotificationUtils {
             PendingIntent pendingIntentAction = t.getPendingIntent();
 
             Notification.Action.Builder builder = new Notification.Action.Builder(Icon.createWithResource("", icon), actionText, pendingIntentAction);
-            Notification.Action notificationAction = builder.build();
-            return notificationAction;
+            return builder.build();
 
         }).collect(Collectors.toList());
 
 
-        Notification.Builder builder = new Notification.Builder(MyApplication.getInstance().getApplicationContext(), channelID)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setSmallIcon(drawable)
-                .setContentIntent(pendingIntent)
-                .setChannelId(CHANNEL_ID_ONGOING)
-                .setCategory(NotificationCompat.CATEGORY_SERVICE);
+        Notification.Builder builder = getBuilder(pendingIntent, channelID, title, text, drawable, NotificationCompat.CATEGORY_SERVICE);
 
         collectedActions.forEach(notificationAction -> builder.addAction(notificationAction));
 
 
-        Notification notification = builder.build();
-        return notification;
+        return builder.build();
+    }
+
+    private static Notification.Builder getBuilder(PendingIntent pendingIntent, String channelID, String title, String text, int drawable, String category) {
+        return new Notification.Builder(MyApplication.getInstance().getApplicationContext(), channelID)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setSmallIcon(drawable)
+                .setContentIntent(pendingIntent)
+                .setCategory(category);
     }
 }

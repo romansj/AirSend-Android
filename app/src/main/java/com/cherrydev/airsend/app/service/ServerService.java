@@ -20,6 +20,7 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import com.cherrydev.airsend.R;
+import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.UserMessage;
@@ -140,6 +141,9 @@ public class ServerService extends Service {
 
         //todo shouldnt this be done in server ssl?
         ServerManager serverManager = ServerManager.getInstance();
+        var ownerProperties =ClientManagerOwnerProperties. getOwnerProperties(this);
+        serverManager.setOwnerProperties(ownerProperties);
+
         if (disposableEvent != null) disposableEvent.dispose(); // service killed, but ServerManager instance still lives, thus without disposing you would add a second subscription
         if (disposableMssg != null) disposableMssg.dispose();
 
@@ -153,14 +157,15 @@ public class ServerService extends Service {
     }
 
     private void processServerEvent(ServerMessage serverMessage) {
-        if (serverMessage.getOperation().equals(ServerOperation.LISTEN)) {
-            PORT = serverMessage.getPort(); //only update in case of listen because EVENT also receives callback about individual server sockets working with their single clients
+        if (!serverMessage.getOperation().equals(ServerOperation.LISTEN)) return;
 
-            SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putInt(getString(R.string.last_used_port), PORT);
-            editor.apply();
-        }
+
+        PORT = serverMessage.getPort(); //only update in case of listen because EVENT also receives callback about individual server sockets working with their single clients
+
+        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(getString(R.string.last_used_port), PORT);
+        editor.apply();
     }
 
 
@@ -241,12 +246,17 @@ public class ServerService extends Service {
         MyAction actionSend = new MyAction(ACTION_SHARE_CLIPBOARD, R.drawable.message_outline, pendingIntentSend);
         MyAction actionStop = new MyAction(ACTION_STOP_SERVICE, R.drawable.stop, pendingIntentStop);
 
-        Notification notification = NotificationUtils.getNotification(pendingIntent, NotificationUtils.CHANNEL_ID_ONGOING, "AirSend is working", "This notification ensures AirSend does not get killed", R.drawable.broadcast, List.of(actionSend, actionStop));
+        Notification notification = NotificationUtils.getNotification(pendingIntent, NotificationUtils.CHANNEL_ID_ONGOING,
+                getString(R.string.airsend_is_working), getString(R.string.this_notification_ensures_airsend_does_not_get_killed),
+                R.drawable.broadcast, List.of(actionSend, actionStop));
 
         // Notification ID cannot be 0.
         //todo assumption... nasty assumption about ID (need proper wrapping around android notification = NotificationUtils)
         startForeground(NotificationUtils.ONGOING_NOTIFICATION_ID, notification);
     }
+
+
+
 
 
     @Override

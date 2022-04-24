@@ -102,4 +102,6 @@
     <string name="confirm">Confirm</string>
     <string name="no_messages_yet">No messages yet</string>
     <string name="no_devices_connected">No devices connected</string>
+    <string name="airsend_is_working">AirSend is working</string>
+    <string name="this_notification_ensures_airsend_does_not_get_killed">This notification ensures AirSend does not get killed</string>
 </resources>

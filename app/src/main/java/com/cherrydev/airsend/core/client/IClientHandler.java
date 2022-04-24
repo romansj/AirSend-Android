@@ -9,7 +9,8 @@ import java.util.List;
  * CM will call these methods if event handler is supplied.
  */
 public interface IClientHandler {
-    void updateClient(String ip, Status b);
+    void updateClient(String ip, Status b, String textResponse);
+
 
     void removeClient(String ip);
 

@@ -2,7 +2,7 @@ package com.cherrydev.airsend.core.client;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.cherrydev.airsend.app.service.ClientManagerOwnerProperties;
+import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.core.ClientMessage;
 import com.cherrydev.airsend.core.Constants;
 import com.cherrydev.airsend.core.MessageType;

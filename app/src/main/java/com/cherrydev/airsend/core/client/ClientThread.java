@@ -23,6 +23,7 @@ import timber.log.Timber;
 
 public class ClientThread extends Thread {
 
+    public static final String HTTP_200 = "HTTP/1.1 200";
     private BufferedReader bufferedReader;
     private PrintWriter printWriter;
     private final String IP;
@@ -30,6 +31,7 @@ public class ClientThread extends Thread {
     private boolean clientIsRunning = false;
     private final ObservableSubject<ClientMessage> clientObservableIn;
     private final PublishSubject<ClientResult> clientObservableOut;
+    private int errorCount = 0;
 
 
     public ClientThread(String IP, int PORT, ObservableSubject<ClientMessage> observableMessage, PublishSubject<ClientResult> observableMessageOut) {
@@ -39,21 +41,6 @@ public class ClientThread extends Thread {
         this.clientObservableOut = observableMessageOut;
     }
 
-    public PublishSubject<ClientResult> getClientObservableOut() {
-        return clientObservableOut;
-    }
-
-    public String getIP() {
-        return IP;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public boolean isClientRunning() {
-        return clientIsRunning;
-    }
 
     public void run() {
         clientIsRunning = true;
@@ -72,7 +59,7 @@ public class ClientThread extends Thread {
             SSLSession sslSession = sslSocket.getSession();
 
             Timber.d("SSLSession:" + " Protocol: " + sslSession.getProtocol() + ", Cipher suite : " + sslSession.getCipherSuite());
-            clientObservableOut.onNext(new ClientResult(true));
+            // clientObservableOut.onNext(new ClientResult(true));
 
             // Start handling application content
             InputStream inputStream = sslSocket.getInputStream();
@@ -109,12 +96,13 @@ public class ClientThread extends Thread {
 
         if (message.isAwaitResponse()) {
             String line = null;
-            while ((line = bufferedReader.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) { // reading response after sending our message, blocking until null
                 Timber.d("Input : " + line);
 
-                if (line.trim().equals("HTTP/1.1 200")) {
+                if (line.trim().startsWith(HTTP_200)) { // TODO what *should* we do if it's not 200?
                     Timber.d("Mssg equals HTTP 200");
-                    clientObservableOut.onNext(new ClientResult(true)); // if server does not respond, a timeout exception is raised and receiving server is assumed not to be running
+                    line = line.replace(HTTP_200, ""); // don't need to forward response code for processing, only remainder
+                    clientObservableOut.onNext(new ClientResult(true, line)); // if server does not respond, a timeout exception is raised and receiving server is assumed not to be running
                     break;
                 }
             }
@@ -128,12 +116,26 @@ public class ClientThread extends Thread {
         }
     }
 
+    public PublishSubject<ClientResult> getClientObservableOut() {
+        return clientObservableOut;
+    }
+
+    public String getIP() {
+        return IP;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public boolean isClientRunning() {
+        return clientIsRunning;
+    }
 
     public void sendMessage(ClientMessage message) {
         clientObservableIn.setValue(message);
     }
 
-    private int errorCount = 0;
 
     public int getErrorCount() {
         return errorCount;
