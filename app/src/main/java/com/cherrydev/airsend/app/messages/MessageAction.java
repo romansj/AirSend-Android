@@ -1,5 +1,5 @@
 package com.cherrydev.airsend.app.messages;
 
-enum MessageAction {
-    COPY_IP, COPY_MESSAGE, DELETE
+public enum MessageAction {
+    COPY_IP, COPY_MESSAGE, RESEND, DELETE
 }

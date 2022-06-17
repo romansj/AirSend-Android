@@ -21,7 +21,7 @@ import com.cherrydev.airsend.databinding.DialogInfoListBinding;
 import java.util.List;
 
 
-public class DialogRecyclerViewAction<T extends DialogRecyclerViewAction.DialogActionItemInterface> extends DialogFragment {
+public class DialogRecyclerViewAction<T extends DialogActionItemInterface> extends DialogFragment {
 
     public static final String ARG_TITLE = "key_title";
     public static final String ARG_MESSAGE = "key_message";
@@ -126,11 +126,6 @@ public class DialogRecyclerViewAction<T extends DialogRecyclerViewAction.DialogA
             e.printStackTrace();
         }
 
-    }
-
-
-    public interface DialogActionItemInterface {
-        String getText();
     }
 
 

@@ -17,7 +17,7 @@ import com.cherrydev.airsend.app.database.DatabaseManager;
 import com.cherrydev.airsend.app.database.DbDao;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.UserMessage;
-import com.cherrydev.airsend.core.MessageType;
+import com.cherrydev.airsendcore.core.MessageType;
 import com.cherrydev.time.CommonTimeUtils;
 
 import org.junit.After;

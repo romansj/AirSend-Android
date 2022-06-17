@@ -3,13 +3,17 @@ package com.cherrydev.airsend.app.messages;
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
@@ -26,11 +30,15 @@ import com.cherrydev.airsend.app.AppViewModel;
 import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.UserMessage;
+import com.cherrydev.airsend.app.messages.recipient.DialogChooseRecipients;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
-import com.cherrydev.airsend.core.client.ClientManager;
 import com.cherrydev.airsend.databinding.FragmentMessagesBinding;
+import com.cherrydev.airsendcore.core.client.ClientManager;
 import com.cherrydev.common.ClipboardUtils;
+import com.cherrydev.common.ConfirmDialog;
+import com.cherrydev.dialogs.WrapperDialogFragment;
+import com.cherrydev.keyboard.KeyboardUtils;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
@@ -74,7 +82,6 @@ public class FragmentMessages extends Fragment {
         // recovery from process death
         restoreState(savedInstanceState);
 
-        binding.btnDeleteMessages.setOnClickListener(v -> databaseManager.deleteAllMessages().runInBackground().run());
 
         initMessageList();
 
@@ -90,7 +97,24 @@ public class FragmentMessages extends Fragment {
         });
 
 
+        binding.btnDeleteMessages.setOnClickListener(v -> {
+            var confirmDialog = ConfirmDialog.newInstance(getString(R.string.delete_messages_question), getString(R.string.this_action_cannot_be_undone),
+                    getString(R.string.delete), getString(R.string.go_back), R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog);
+
+            confirmDialog.setListener(() -> databaseManager.deleteAllMessages().runInBackground().run());
+
+            confirmDialog.show(getParentFragmentManager(), null);
+        });
+
+
         listenToTextSendEvents();
+
+
+        binding.btnSentMessages.setOnClickListener(v -> {
+            WrapperDialogFragment.newInstance(
+                    FragmentSentMessages.newInstance()
+            ).show(getParentFragmentManager(), null);
+        });
     }
 
 
@@ -109,15 +133,24 @@ public class FragmentMessages extends Fragment {
         }
     }
 
+    Handler handler;
+
+    Handler getHandler() {
+        if (handler == null) handler = new Handler();
+        return handler;
+    }
+
 
     private void initDropDown() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.list_item, messageViewModel.getRecipientChoices());
-        ((AutoCompleteTextView) binding.dropdownRecipient.getEditText()).setAdapter(adapter);
-        ((AutoCompleteTextView) binding.dropdownRecipient.getEditText()).setText(messageViewModel.getRecipientChoice(), false);
-        binding.btnPickRecipient.setVisibility(messageViewModel.getRecipientChoice().equals(messageViewModel.getRecipientChoices().get(1)) ? View.VISIBLE : View.GONE);
+        var recipientEditText = binding.dropdownRecipient.getEditText();
+
+        ((AutoCompleteTextView) recipientEditText).setAdapter(adapter);
+        ((AutoCompleteTextView) recipientEditText).setText(messageViewModel.getRecipientChoice(), false);
+//        binding.btnPickRecipient.setVisibility(messageViewModel.getRecipientChoice().equals(messageViewModel.getRecipientChoices().get(1)) ? View.VISIBLE : View.GONE);
 
 
-        var recipientDialogListener = new DialogChooseRecipients.ChooseLabelDialogListener() {
+        var recipientDialogListener = new DialogChooseRecipients.DialogListener() {
             @Override
             public void onDialogClosed(List<Device> selected) {
                 messageViewModel.setSelectedDevices(selected);
@@ -125,25 +158,17 @@ public class FragmentMessages extends Fragment {
 
                 if (selected.isEmpty()) {
                     Toast.makeText(requireContext(), requireContext().getString(R.string.please_select_devices), Toast.LENGTH_LONG).show();
-                    ((AutoCompleteTextView) binding.dropdownRecipient.getEditText()).setText(messageViewModel.getRecipientChoices().get(0), false);
+                    ((AutoCompleteTextView) recipientEditText).setText(messageViewModel.getRecipientChoices().get(0), false);
                     return;
                 }
 
-
-                binding.inputLayoutMessage.getEditText().requestFocus();
-                InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(binding.inputLayoutMessage, InputMethodManager.SHOW_IMPLICIT);
-            }
-
-            @Override
-            public void onDialogCancelled() {
-                ((AutoCompleteTextView) binding.dropdownRecipient.getEditText()).setText(messageViewModel.getRecipientChoices().get(0), false);
+                getHandler().postDelayed(() -> KeyboardUtils.showKeyboard(binding.inputLayoutMessage.getEditText(), requireContext()), 100);
             }
 
         };
 
 
-        binding.dropdownRecipient.getEditText().addTextChangedListener(new TextWatcher() {
+        recipientEditText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -153,6 +178,8 @@ public class FragmentMessages extends Fragment {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 messageViewModel.setRecipientChoice(s.toString());
                 binding.btnPickRecipient.setVisibility(messageViewModel.getRecipientChoice().equals(messageViewModel.getRecipientChoices().get(1)) ? View.VISIBLE : View.GONE);
+
+
                 if (messageViewModel.getRecipientChoice().equals(messageViewModel.getRecipientChoices().get(1))) {
                     if (!messageViewModel.getSelectedDevices().isEmpty()) return; // dont ask to select when already selected devices before
                     showSelectRecipientDialog(recipientDialogListener);
@@ -246,10 +273,21 @@ public class FragmentMessages extends Fragment {
     }
 
     private void initMessageList() {
-        MessageAdapter.OnClickListener clickListener = new MessageAdapter.OnClickListener() {
+        SharedPreferences sharedPreferences = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+
+        OnClickListener<UserMessage> clickListener = new OnClickListener<>() {
             @Override
             public void onClick(UserMessage message) {
-                ClipboardUtils.copyToClipboard(MyApplication.getInstance(), message.getText());
+                var messageText = message.getText();
+                var isLink = Patterns.WEB_URL.matcher(messageText).matches();
+
+                var settingOpenLinks = sharedPreferences.getBoolean(getString(R.string.setting_open_links_on_click), true);
+                if (isLink && settingOpenLinks) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(messageText)));
+                    return;
+                }
+
+                ClipboardUtils.copyToClipboard(MyApplication.getInstance(), messageText);
                 Toast.makeText(requireContext(), getString(R.string.copied_message_text), Toast.LENGTH_LONG).show();
             }
 
@@ -267,16 +305,16 @@ public class FragmentMessages extends Fragment {
             }
         };
 
-        MessageAdapter adapter = new MessageAdapter(clickListener);
+        MessageAdapter<UserMessage> adapter = new MessageAdapter<>(clickListener);
         adapter.setHasStableIds(true);
         viewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
             adapter.updateData(messages);
-            binding.tvEmptyRvMessages.setVisibility(messages.size() == 0 ? View.VISIBLE : View.GONE);
-            binding.recyclerView.setVisibility(messages.size() != 0 ? View.VISIBLE : View.GONE);
+            binding.include.tvEmptyRvMessages.setVisibility(messages.size() == 0 ? View.VISIBLE : View.GONE);
+            binding.include.recyclerView.setVisibility(messages.size() != 0 ? View.VISIBLE : View.GONE);
         });
 
-        binding.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.recyclerView.setAdapter(adapter);
+        binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.include.recyclerView.setAdapter(adapter);
     }
 
     private void handleMessageActionChoice(UserMessage message, MessageAction messageAction) {
@@ -296,7 +334,7 @@ public class FragmentMessages extends Fragment {
     }
 
 
-    private void showSelectRecipientDialog(DialogChooseRecipients.ChooseLabelDialogListener dialogListener) {
+    private void showSelectRecipientDialog(DialogChooseRecipients.DialogListener dialogListener) {
         databaseManager.getDb().getAllDevices().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(devices -> {
             var dialog = DialogChooseRecipients.newInstance(devices, messageViewModel.getSelectedDevices(), dialogListener);
             dialog.show(getParentFragmentManager(), null);

@@ -3,9 +3,10 @@ package com.cherrydev.airsend.app.database;
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 
 import com.cherrydev.airsend.app.database.models.Device;
-import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
-import com.cherrydev.airsend.core.Status;
-import com.cherrydev.airsend.core.client.IClientHandler;
+import com.cherrydev.airsendcore.core.ClientMessage;
+import com.cherrydev.airsendcore.core.OwnerProperties;
+import com.cherrydev.airsendcore.core.Status;
+import com.cherrydev.airsendcore.core.client.IClientHandler;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class ClientHandlerImpl implements IClientHandler {
 
     @Override
     public void updateClient(String ip, Status b, String textResponse) {
-        ClientManagerOwnerProperties ownerProperties = ClientManagerOwnerProperties.fromReceived(textResponse);
+        OwnerProperties ownerProperties = OwnerProperties.fromReceived(textResponse);
         if (ownerProperties != null) {
             Device device = new Device(ownerProperties.getName(), ip, ownerProperties.getPort(), ownerProperties.getClientType(), b);
             databaseManager.addDevice(device).runInBackground().run();
@@ -24,6 +25,15 @@ public class ClientHandlerImpl implements IClientHandler {
         }
 
         databaseManager.updateDevice(ip, b).runInBackground().run();
+    }
+
+    @Override
+    public void updateClient(ClientMessage message, String textResponse) {
+        updateClient(
+                message.getIP(),
+                message.isKill() ? Status.NOT_RUNNING : Status.RUNNING,
+                textResponse
+        );
     }
 
     @Override

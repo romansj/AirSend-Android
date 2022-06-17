@@ -1,8 +1,8 @@
 package com.cherrydev.airsend.app.connections;
 
-import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
+import com.cherrydev.airsend.app.utils.DialogActionItemInterface;
 
-public class DeviceActionWrapper implements DialogRecyclerViewAction.DialogActionItemInterface {
+public class DeviceActionWrapper implements DialogActionItemInterface {
     private DeviceAction deviceAction;
     private String text;
 

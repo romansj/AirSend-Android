@@ -1,0 +1,13 @@
+<resources>
+    <string name="setting_debug_options">setting_debug_options</string>
+    <string name="setting_connect_to_known">setting_connect_to_known</string>
+    <string name="setting_close_client_socket">setting_close_client_socket</string>
+    <string name="setting_start_on_boot">setting_start_on_boot</string>
+    <string name="disable_battery_optimization">Disable battery optimization</string>
+    <string name="setting_send_clipboard">setting_send_clipboard</string>
+    <string name="setting_show_notifications">setting_show_notifications</string>
+    <string name="setting_device_name">setting_device_name</string>
+    <string name="setting_show_notifications_message">setting_show_notifications_message</string>
+    <string name="setting_open_links_on_click">Open links on click</string>
+
+</resources>

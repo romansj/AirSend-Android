@@ -5,8 +5,10 @@ import android.content.Context;
 import androidx.room.Room;
 
 import com.cherrydev.airsend.app.database.models.Device;
+import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.database.models.UserMessage;
-import com.cherrydev.airsend.core.Status;
+import com.cherrydev.airsendcore.core.SentStatus;
+import com.cherrydev.airsendcore.core.Status;
 
 import java.util.List;
 
@@ -89,6 +91,7 @@ public class DatabaseManager {
         return new DatabaseQuery.Builder().setQuery(() -> {
             getDb().deleteAllDevices();
             getDb().deleteAllMessages();
+            getDb().deleteAllSentMessages();
         });
     }
 
@@ -100,4 +103,14 @@ public class DatabaseManager {
     public DatabaseQuery.Builder deleteAllMessages() {
         return new DatabaseQuery.Builder().setQuery(() -> getDb().deleteAllMessages());
     }
+
+
+    public DatabaseQuery.Builder updateSentMessage(SentMessage message, SentStatus status) {
+        return new DatabaseQuery.Builder().setQuery(() -> getDb().updateSentMessage(message.getId(), status));
+    }
+
+    public long addSentMessage(SentMessage message) {
+        return getDb().addSentMessage(message);
+    }
+
 }

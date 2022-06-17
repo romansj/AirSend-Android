@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:showIn="@layout/fragment_messages">
+
+    <TextView
+        android:id="@+id/tv_empty_rv_messages"
+        style="@style/TextAppearance.MaterialComponents.Caption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_messages_yet" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:fadingEdgeLength="@dimen/fading_edge_large_row"
+        android:paddingStart="@dimen/large"
+        android:paddingEnd="@dimen/large"
+        android:requiresFadingEdge="vertical"
+        android:visibility="gone"
+        tools:listitem="@layout/row_message" />
+</FrameLayout>

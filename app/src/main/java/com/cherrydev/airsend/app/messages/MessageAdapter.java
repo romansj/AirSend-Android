@@ -11,18 +11,21 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cherrydev.airsend.R;
-import com.cherrydev.airsend.app.database.models.UserMessage;
+import com.cherrydev.time.CommonTimeUtils;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+public class MessageAdapter<T extends IMessage> extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
-    private OnClickListener onClickListener;
-    private List<UserMessage> items = new ArrayList<>();
+    private OnClickListener<T> onClickListener;
+    private List<T> items = new ArrayList<>();
 
 
-    public MessageAdapter(OnClickListener onClickListener) {
+    public MessageAdapter(OnClickListener<T> onClickListener) {
         this.onClickListener = onClickListener;
     }
 
@@ -38,30 +41,37 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int pos) {
-        UserMessage item = getItem(pos);
+        T item = getItem(pos);
 
 
-        holder.textView.setText(item.getIP());
+        holder.textView.setText(item.getIP() + ", ID: " + item.getId());
         holder.textViewMessage.setText(item.getText());
-        holder.timeTv.setText(item.getDateTime());
+
+        long itemDateTime = item.getDateTime();
+        String formattedDateTimeString = CommonTimeUtils.Format.toFormattedDateTimeString(LocalDateTime.ofInstant(Instant.ofEpochMilli(itemDateTime), ZoneId.systemDefault()), true);
+        holder.timeTv.setText(formattedDateTimeString);
+        if (item.getStatus() == null) holder.statusView.setVisibility(View.GONE);
+        else holder.statusView.setText(item.getStatus());
+
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        TextView timeTv, textView, textViewMessage;
+        TextView timeTv, textView, textViewMessage, statusView;
 
         ViewHolder(View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.tv_ip);
             textViewMessage = itemView.findViewById(R.id.tv_text);
             timeTv = itemView.findViewById(R.id.tv_time);
+            statusView = itemView.findViewById(R.id.tv_status);
 
             itemView.setOnClickListener(v -> {
                 int position = getAdapterPosition();
 
                 if (position != RecyclerView.NO_POSITION) {
-                    UserMessage UserMessage = items.get(position);
-                    onClickListener.onClick(UserMessage);
+                    T message = items.get(position);
+                    onClickListener.onClick(message);
                 }
 
             });
@@ -69,8 +79,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             itemView.setOnLongClickListener(v -> {
                 int position = getAdapterPosition();
                 if (position != RecyclerView.NO_POSITION) {
-                    UserMessage UserMessage = items.get(position);
-                    onClickListener.onLongClick(UserMessage);
+                    T message = items.get(position);
+                    onClickListener.onLongClick(message);
                 }
                 return true;
             });
@@ -86,7 +96,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
 
-    public void updateData(List<UserMessage> newItems) {
+    public void updateData(List<T> newItems) {
 //        ArrayList<MyMessage> oldItems = new ArrayList<>(items);
         this.items.clear();
         this.items = newItems;
@@ -99,13 +109,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
 
     // convenience method for getting data at click position
-    public UserMessage getItem(int position) {
+    public T getItem(int position) {
         return items.get(position);
     }
 
-    public UserMessage getItemById(int id) {
-        UserMessage item = null;
-        for (UserMessage chip : items) {
+    public T getItemById(int id) {
+        T item = null;
+        for (T chip : items) {
             if (id == chip.getId()) {
                 item = chip;
             }
@@ -118,7 +128,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         return items.get(position).getId();
     }
 
-    public List<UserMessage> getItems() {
+    public List<T> getItems() {
         return items;
     }
 
@@ -128,19 +138,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     }
 
 
-    public interface OnClickListener {
-        void onClick(UserMessage UserMessage);
-
-        void onLongClick(UserMessage UserMessage);
-    }
-
-
     public class ChipDiffUtil extends DiffUtil.Callback {
 
-        private List<UserMessage> prevList;
-        private List<UserMessage> newList;
+        private List<T> prevList;
+        private List<T> newList;
 
-        ChipDiffUtil(List<UserMessage> newList, List<UserMessage> oldList) {
+        ChipDiffUtil(List<T> newList, List<T> oldList) {
             this.newList = newList;
             this.prevList = oldList;
         }

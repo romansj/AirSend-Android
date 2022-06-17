@@ -10,4 +10,5 @@
     <dimen name="fading_edge_large_row">64dp</dimen>
     <dimen name="dialog_margin">20dp</dimen>
     <dimen name="card_elevation">8dp</dimen>
+    <dimen name="smallest">2dp</dimen>
 </resources>

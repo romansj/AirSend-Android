@@ -29,8 +29,8 @@ import com.cherrydev.airsend.app.utils.BarcodeUtils;
 import com.cherrydev.airsend.app.utils.ClipboardUtils;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
-import com.cherrydev.airsend.core.client.ClientManager;
 import com.cherrydev.airsend.databinding.FragmentConnectionsBinding;
+import com.cherrydev.airsendcore.core.client.ClientManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;

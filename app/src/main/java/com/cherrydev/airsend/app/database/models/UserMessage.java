@@ -3,10 +3,16 @@ package com.cherrydev.airsend.app.database.models;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.cherrydev.airsend.core.MessageType;
+import com.cherrydev.airsend.app.messages.IMessage;
+import com.cherrydev.airsendcore.core.MessageType;
+import com.cherrydev.time.CommonTimeUtils;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 @Entity
-public class UserMessage {
+public class UserMessage implements IMessage {
 
 
     @PrimaryKey(autoGenerate = true)
@@ -16,13 +22,13 @@ public class UserMessage {
     private int port;
     private String text;
     private MessageType type;
-    private String dateTime;
+    private long dateTime;
 
 
     public UserMessage() {
     }
 
-    public UserMessage(String ip, int port, String userMessage, MessageType type, String dateTime) {
+    public UserMessage(String ip, int port, String userMessage, MessageType type, long dateTime) {
         this.IP = ip;
         this.port = port;
         this.text = userMessage;
@@ -70,11 +76,16 @@ public class UserMessage {
         this.port = port;
     }
 
-    public String getDateTime() {
+    public long getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(String dateTime) {
+    @Override
+    public String getStatus() {
+        return null;
+    }
+
+    public void setDateTime(long dateTime) {
         this.dateTime = dateTime;
     }
 }

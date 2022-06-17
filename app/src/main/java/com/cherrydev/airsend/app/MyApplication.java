@@ -1,12 +1,18 @@
 package com.cherrydev.airsend.app;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.StrictMode;
 
 import com.cherrydev.airsend.BuildConfig;
+import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.DatabaseManager;
+import com.cherrydev.airsend.app.service.ServerService;
 import com.cherrydev.airsend.app.service.notification.NotificationUtils;
-import com.cherrydev.airsend.core.Constants;
+import com.cherrydev.airsendcore.core.Constants;
+import com.cherrydev.airsendcore.core.OwnerProperties;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -30,6 +36,13 @@ public class MyApplication extends Application {
     public static MyApplication getInstance() {
         if (INSTANCE == null) INSTANCE = new MyApplication();
         return INSTANCE;
+    }
+
+    public static OwnerProperties getOwnerProperties(Context context) {
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String settingDeviceName = sharedPref.getString(context.getString(R.string.setting_device_name), Build.MODEL);
+        OwnerProperties ownerProperties = new OwnerProperties(ServerService.getPORT(), settingDeviceName, "A");
+        return ownerProperties;
     }
 
     @Override
@@ -60,8 +73,7 @@ public class MyApplication extends Application {
             sslContext = SSLContext.getInstance(Constants.protocol);
             sslContext.init(null, null, null);
             sslContext.createSSLEngine();
-        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException
-                | NoSuchAlgorithmException | KeyManagementException e) {
+        } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException | NoSuchAlgorithmException | KeyManagementException e) {
             e.printStackTrace();
         }
 
@@ -78,5 +90,7 @@ public class MyApplication extends Application {
         if (BuildConfig.DEBUG) StrictMode.enableDefaults();
     }
 
-
+    public static DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
 }

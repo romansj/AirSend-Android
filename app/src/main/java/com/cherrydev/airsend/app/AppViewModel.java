@@ -2,15 +2,21 @@ package com.cherrydev.airsend.app;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.cherrydev.airsend.app.database.models.Device;
+import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.database.models.UserMessage;
 import com.cherrydev.airsend.app.utils.NavUtils;
-import com.cherrydev.airsend.core.MessageType;
+import com.cherrydev.airsendcore.core.MessageType;
+import com.cherrydev.time.CommonTimeUtils;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 public class AppViewModel extends ViewModel {
@@ -20,6 +26,11 @@ public class AppViewModel extends ViewModel {
     private LiveData<List<Device>> devices;
 
     private NavUtils.Tag navigationTag = NavUtils.Tag.MESSAGES;
+    private LiveData<List<SentMessage>> sentMessages;
+
+    private List<MessageType> types;
+    private long dateFrom;
+    private long dateUntil;
 
 
     public AppViewModel() {
@@ -65,5 +76,18 @@ public class AppViewModel extends ViewModel {
 
     public void setNavigationTag(NavUtils.Tag navigationTag) {
         this.navigationTag = navigationTag;
+    }
+
+    public LiveData<List<SentMessage>> getSentMessages() {
+        // if (sentMessages == null) // todo 12.06.2022
+        // sentMessages = databaseManager.getDb().getSentMessages(dateFrom, dateUntil, types);
+        sentMessages = databaseManager.getDb().getSentMessages(dateFrom,dateUntil, types);
+        return sentMessages;
+    }
+
+    public void setSentMessageFilter(@Nullable LocalDateTime dateFrom, @Nullable LocalDateTime dateUntil, @NonNull List<MessageType> types) {
+        this.dateFrom = dateFrom == null ? -1 : CommonTimeUtils.Convert.toMillis(dateFrom);
+        this.dateUntil = dateUntil == null ? -1 : CommonTimeUtils.Convert.toMillis(dateUntil);
+        this.types = types;
     }
 }

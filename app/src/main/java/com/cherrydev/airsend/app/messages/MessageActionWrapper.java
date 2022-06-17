@@ -1,8 +1,8 @@
 package com.cherrydev.airsend.app.messages;
 
-import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
+import com.cherrydev.airsend.app.utils.DialogActionItemInterface;
 
-public class MessageActionWrapper implements DialogRecyclerViewAction.DialogActionItemInterface {
+public class MessageActionWrapper implements DialogActionItemInterface {
     private MessageAction messageAction;
     private String text;
 

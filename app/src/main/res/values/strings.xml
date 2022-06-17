@@ -32,15 +32,6 @@
     <string name="already_done">Already done</string>
     <string name="connect_to_device">Connect to device</string>
 
-    <string name="setting_connect_to_known">setting_connect_to_known</string>
-    <string name="setting_close_client_socket">setting_close_client_socket</string>
-    <string name="setting_start_on_boot">setting_start_on_boot</string>
-    <string name="disable_battery_optimization">Disable battery optimization</string>
-    <string name="setting_send_clipboard">setting_send_clipboard</string>
-    <string name="setting_show_notifications">setting_show_notifications</string>
-    <string name="setting_device_name">setting_device_name</string>
-    <string name="setting_show_notifications_message">setting_show_notifications_message</string>
-
 
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
@@ -73,7 +64,6 @@
     <string name="copied_message_text">Copied message text</string>
     <string name="empty_clipboard_can_write" />
     <string name="incorrect_qr_format">Incorrect QR format</string>
-    <string name="setting_debug_options">setting_debug_options</string>
     <string name="select_recipients">Select recipients</string>
     <string name="connected_devices">Connected devices</string>
     <string name="selected_devices">Selected devices</string>
@@ -104,4 +94,9 @@
     <string name="no_devices_connected">No devices connected</string>
     <string name="airsend_is_working">AirSend is working</string>
     <string name="this_notification_ensures_airsend_does_not_get_killed">This notification ensures AirSend does not get killed</string>
+    <string name="resend">Resend</string>
+
+    <string name="setting_open_links_on_click_description">Clicking on a message with a link will open the link instead of copying it to clipboard</string>
+    <string name="this_action_cannot_be_undone">This action cannot be undone</string>
+    <string name="delete_messages_question">Delete messages?</string>
 </resources>

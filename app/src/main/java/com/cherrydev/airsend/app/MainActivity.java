@@ -19,15 +19,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.cherrydev.airsend.BuildConfig;
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
+import com.cherrydev.airsend.app.messages.SentMessageHandlerImpl;
 import com.cherrydev.airsend.app.service.ServerService;
 import com.cherrydev.airsend.app.utils.AppUtils;
 import com.cherrydev.airsend.app.utils.IntentAction;
 import com.cherrydev.airsend.app.utils.NavUtils;
-import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
-import com.cherrydev.airsend.core.client.ClientManager;
 import com.cherrydev.airsend.databinding.ActivityMainBinding;
+import com.cherrydev.airsendcore.core.client.ClientManager;
+import com.cherrydev.airsendcore.utils.SSLUtils;
 import com.cherrydev.common.MimeTypes;
 
 import java.util.stream.Collectors;
@@ -100,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
         // called here to set the ClientHandler before any other invocation
         ClientManager instance = ClientManager.getInstance();
+        instance.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        instance.setMessageHandler(new SentMessageHandlerImpl());
         instance.setClientHandler(new ClientHandlerImpl());
 
         Intent intent = getIntent();
@@ -110,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         var preferences = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        boolean isChecked = preferences.getBoolean((String) getString(R.string.setting_debug_options), false);
+        boolean isChecked = preferences.getBoolean(getString(R.string.setting_debug_options), false);
         binding.linearDebug.setVisibility(isChecked ? View.VISIBLE : View.GONE);
     }
 
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAvailable(Network network) {
                 Timber.d("ClientSSL " + "The default network is now: " + network);
 
-                var ownerProperties = ClientManagerOwnerProperties. getOwnerProperties(MainActivity.this);
+                var ownerProperties = MyApplication.getOwnerProperties(MainActivity.this);
                 ClientManager.getInstance().setOwnerProperties(ownerProperties);
 
                 databaseManager.getDb().getAllDevices().subscribeOn(Schedulers.io()).subscribe(devices -> {

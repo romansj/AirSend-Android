@@ -9,9 +9,11 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.cherrydev.airsend.app.database.models.Device;
+import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.database.models.UserMessage;
-import com.cherrydev.airsend.core.MessageType;
-import com.cherrydev.airsend.core.Status;
+import com.cherrydev.airsendcore.core.MessageType;
+import com.cherrydev.airsendcore.core.SentStatus;
+import com.cherrydev.airsendcore.core.Status;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,4 +96,45 @@ public interface DbDao {
 
     @Query("SELECT * FROM usermessage WHERE IP LIKE  '%' || :IP || '%'")
     List<UserMessage> findMessagesByIp(String IP);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    long addSentMessage(SentMessage message);
+
+    @Query("UPDATE SentMessage SET sentStatus=:sentStatus WHERE id =:id")
+    void updateSentMessage(long id, SentStatus sentStatus);
+
+    @Update()
+    void updateSentMessage(SentMessage sentMessage);
+
+    @Query("SELECT * FROM SentMessage ORDER BY id DESC")
+    LiveData<List<SentMessage>> getSentMessages();
+
+    @Query(
+            "SELECT * FROM SentMessage " +
+                    "WHERE (1=1)" +
+
+                    "AND CASE WHEN :dateFrom is not -1 " +
+                    "THEN dateTime > :dateFrom " +
+                    "ELSE 1 " +
+                    "END " +
+
+                    "AND CASE WHEN :dateUntil is not -1 " +
+                    "THEN dateTime < :dateUntil " +
+                    "ELSE 1 " +
+                    "END " +
+
+                    "AND type in (:types)" +
+                    "ORDER BY id DESC"
+    )
+    LiveData<List<SentMessage>> getSentMessages(long dateFrom, long dateUntil, List<MessageType> types);
+
+    @Query("SELECT DISTINCT date (dateTime/1000, 'unixepoch') FROM SentMessage ORDER BY dateTime ASC")
+    LiveData<List<String>> getUniqueDates();
+
+
+    @Query("DELETE FROM SentMessage")
+    void deleteAllSentMessages();
+
+    @Query("SELECT * FROM SentMessage WHERE id = :id")
+    SentMessage findSentMessage(long id);
 }

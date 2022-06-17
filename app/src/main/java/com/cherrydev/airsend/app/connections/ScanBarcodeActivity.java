@@ -16,7 +16,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MyApplication;
-import com.cherrydev.airsend.app.utils.mymodels.ObservableSubject;
+import com.cherrydev.airsendcore.utils.ObservableSubject;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
@@ -36,6 +36,7 @@ public class ScanBarcodeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan_barcode);
 

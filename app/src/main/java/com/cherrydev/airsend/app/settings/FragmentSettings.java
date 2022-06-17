@@ -31,6 +31,7 @@ import java.util.List;
 
 public class FragmentSettings extends Fragment {
 
+    private int countClickedAbout = 0;
     private FragmentSettingsBinding binding;
 
     public static FragmentSettings newInstance() {
@@ -54,7 +55,8 @@ public class FragmentSettings extends Fragment {
                 binding.switchConnectToKnown,
                 binding.switchStartOnBoot,
                 binding.switchShowNotificationsConnection,
-                binding.switchShowNotificationsMessage
+                binding.switchShowNotificationsMessage,
+                binding.switchOpenLinksOnClick
         );
 
 
@@ -117,7 +119,8 @@ public class FragmentSettings extends Fragment {
 
         binding.btnLicenses.setOnClickListener(v -> DialogLicenses.newInstance().show(getParentFragmentManager(), null));
 
-        binding.tvMadeBy.setOnClickListener(v -> {
+
+        binding.imageViewAbout.setOnClickListener(v -> {
             countClickedAbout++;
             if (countClickedAbout == 3) {
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -128,17 +131,15 @@ public class FragmentSettings extends Fragment {
             }
         });
 
-        binding.tvMadeBy.setOnLongClickListener(v -> {
+        binding.imageViewAbout.setOnLongClickListener(v -> {
             SharedPreferences.Editor editor = sharedPref.edit();
             editor.putBoolean((String) v.getTag(), false);
             editor.apply();
 
-            Toast.makeText(requireContext(), "You have enabled developer settings. Please restart the app.", Toast.LENGTH_LONG).show();
+            Toast.makeText(requireContext(), "You have disabled developer settings. Please restart the app.", Toast.LENGTH_LONG).show();
             return true;
         });
     }
-
-    int countClickedAbout = 0;
 
 
     private void updateBatteryOptButton() {

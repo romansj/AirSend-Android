@@ -7,13 +7,16 @@
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="corretto-17" />
+        <option name="gradleJvm" value="Android Studio default JDK" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/AirSendCore" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/../CommonTools/common" />
+            <option value="$PROJECT_DIR$/../CommonTools/dialogs" />
             <option value="$PROJECT_DIR$/../CommonTools/file" />
+            <option value="$PROJECT_DIR$/../CommonTools/keyboard" />
             <option value="$PROJECT_DIR$/../CommonTools/time" />
           </set>
         </option>

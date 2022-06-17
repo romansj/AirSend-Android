@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.models.Device;
-import com.cherrydev.airsend.core.Status;
+import com.cherrydev.airsendcore.core.Status;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 

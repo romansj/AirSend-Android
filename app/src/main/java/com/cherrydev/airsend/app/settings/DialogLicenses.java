@@ -44,7 +44,7 @@ public class DialogLicenses extends DialogFragment {
         var licenseItems = List.of(rxAndroid, roomDatabase, conscrypt, qrGen, timber, benchit, icons, googleGuava);
 
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext(), R.style.MaterialAlertDialog_MaterialComponents);
         DialogInfoBinding binding = DialogInfoBinding.inflate(LayoutInflater.from(requireContext()));
 
         binding.tvTitle.setText(getString(R.string.licenses));

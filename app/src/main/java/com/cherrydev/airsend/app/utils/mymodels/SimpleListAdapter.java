@@ -10,11 +10,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.cherrydev.airsend.R;
-import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
+import com.cherrydev.airsend.app.utils.DialogActionItemInterface;
 
 import java.util.List;
 
-public class SimpleListAdapter<T extends DialogRecyclerViewAction.DialogActionItemInterface> extends RecyclerView.Adapter<SimpleListAdapter<T>.ViewHolder> {
+public class SimpleListAdapter<T extends DialogActionItemInterface> extends RecyclerView.Adapter<SimpleListAdapter<T>.ViewHolder> {
 
     private OnClickListener onClickListener;
     private List<T> items;

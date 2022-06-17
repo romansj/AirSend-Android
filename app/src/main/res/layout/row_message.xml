@@ -37,7 +37,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/small"
+                android:layout_marginBottom="@dimen/smallest"
                 android:orientation="horizontal">
 
                 <TextView
@@ -53,18 +53,28 @@
                     style="@style/TextAppearance.MaterialComponents.Caption"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/large"
                     tools:text="Timestamp" />
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_status"
+                style="@style/TextAppearance.MaterialComponents.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/small"
+                tools:text="(Status)" />
 
             <TextView
                 android:id="@+id/tv_text"
                 style="@style/TextAppearance.MaterialComponents.Body1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:autoLink="web|email"
                 android:ellipsize="end"
                 android:maxLines="3"
-                tools:text="Received text\nReceived\n text\nReceived text\nRece\nived text" />
+                tools:text="Received text\nReceived\n text\nReceived text\nReceived text" />
         </LinearLayout>
 
 

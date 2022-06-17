@@ -1,12 +1,18 @@
-rootProject.name='AirSend'
+rootProject.name = 'AirSend'
 include ':app'
+include ':AirSendCore'
 
 
 include ':app:common'
 include ':app:file'
 include ':app:time'
+include ':app:keyboard'
+include ':app:dialogs'
 
 
 project(':app:common').projectDir = file('C:\\AndroidProjects\\CommonTools\\common')
 project(':app:file').projectDir = file('C:\\AndroidProjects\\CommonTools\\file')
 project(':app:time').projectDir = file('C:\\AndroidProjects\\CommonTools\\time')
+project(':app:keyboard').projectDir = file('C:\\AndroidProjects\\CommonTools\\keyboard')
+project(':app:dialogs').projectDir = file('C:\\AndroidProjects\\CommonTools\\dialogs')
+

@@ -13,9 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.cherrydev.airsend.BuildConfig;
+import com.cherrydev.airsend.R;
+import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
-import com.cherrydev.airsend.core.client.ClientManager;
+import com.cherrydev.airsendcore.core.OwnerProperties;
+import com.cherrydev.airsendcore.core.Status;
+import com.cherrydev.airsendcore.core.client.ClientManager;
+import com.cherrydev.airsendcore.utils.SSLUtils;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -105,23 +111,22 @@ public class ClientTests {
     public void disconnectDoesNotRetry() {
         ClientManager clientManager = getClientManager();
 
-
         var clientHandler = mock(ClientHandlerImpl.class);
-        var inOrder = inOrder(clientHandler);
-
         clientManager.setClientHandler(clientHandler);
 
-
-        clientManager.disconnect(ip, port);
-        //verify(clientHandler, after(500).atMost(4)).addClient(ip, port);
-        verify(clientHandler, after(500)).updateClient(ip, Status.NOT_RUNNING, null);
+        clientManager.disconnect(ip, port, false);
+        verify(clientHandler, after(11000)).updateClient(ip, Status.NOT_RUNNING, null);
     }
 
     @NonNull
     private ClientManager getClientManager() {
-        var ownerProperties = new ClientManagerOwnerProperties(port, "Instrumentation Runner", "Process");
         var clientManager = ClientManager.getInstance();
+
+        clientManager.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+
+        var ownerProperties = new OwnerProperties(port, "Instrumentation Runner", "Process");
         clientManager.setOwnerProperties(ownerProperties);
+
         return clientManager;
     }
 

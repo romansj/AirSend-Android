@@ -6,13 +6,20 @@ import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.cherrydev.airsend.BuildConfig;
+import com.cherrydev.airsend.R;
+import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
-import com.cherrydev.airsend.core.client.ClientManager;
-import com.cherrydev.airsend.core.server.ServerManager;
-import com.cherrydev.airsend.core.server.ServerMessage;
+import com.cherrydev.airsendcore.core.ClientMessage;
+import com.cherrydev.airsendcore.core.OwnerProperties;
+import com.cherrydev.airsendcore.core.client.ClientManager;
+import com.cherrydev.airsendcore.core.server.ServerManager;
+import com.cherrydev.airsendcore.core.server.ServerMessage;
+import com.cherrydev.airsendcore.utils.SSLUtils;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,6 +32,7 @@ import java.util.NoSuchElementException;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -64,16 +72,16 @@ public class IntegrationClientServer {
         List<String> expectedOutput = List.of(port + ",T,unit", "Hello world!");
 
 
-        ServerManager serverManager = ServerManager.getInstance();
+        ServerManager serverManager = getServerManager();
         Observable<ClientMessage> messageObservable = serverManager.startServer(port);
 
 
         ServerMessage serverMessage = serverManager.getObservableMessageEvent().blockingFirst();
         port = serverMessage.getPort();
+        Timber.d("port yes");
 
 
-        ClientManager clientManager = ClientManager.getInstance();
-        clientManager.setOwnerProperties(new ClientManagerOwnerProperties(port, "unit", "T"));
+        ClientManager clientManager = getClientManager("unit", "T");
         // end setup
 
 
@@ -96,10 +104,24 @@ public class IntegrationClientServer {
         assertThat(outputList).isEqualTo(expectedOutput);
     }
 
+    private ServerManager getServerManager() {
+        ServerManager serverManager = ServerManager.getInstance();
+        OwnerProperties ownerProperties = getOwnerProperties();
+        serverManager.setOwnerProperties(ownerProperties);
+        serverManager.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        return serverManager;
+    }
+
+    @NonNull
+    private OwnerProperties getOwnerProperties() {
+        var ownerProperties = getOwnerProperties("Instrumentation Runner", "Process");
+        return ownerProperties;
+    }
+
 
     @Test
     public void runningServerDoesNotRunTwice() {
-        ServerManager serverManager = ServerManager.getInstance();
+        ServerManager serverManager = getServerManager();
 
         Observable<ClientMessage> messageObservableStart = serverManager.startServer(port);
         Observable<ClientMessage> messageObservableStartAgain = serverManager.startServer(port);
@@ -110,7 +132,7 @@ public class IntegrationClientServer {
 
     @Test
     public void stoppedServerCleansUp() {
-        ServerManager serverManager = ServerManager.getInstance();
+        ServerManager serverManager = getServerManager();
 
         Observable<ClientMessage> messageObservableStart = serverManager.startServer(port);
         serverManager.stopServer();
@@ -134,11 +156,10 @@ public class IntegrationClientServer {
         List<String> outputList = new ArrayList<>();
 
 
-        ServerManager serverManager = ServerManager.getInstance();
+        ServerManager serverManager = getServerManager();
         Observable<ClientMessage> serverObservable = serverManager.startServer(port);
 
-        ClientManager clientManager = ClientManager.getInstance();
-        clientManager.setOwnerProperties(new ClientManagerOwnerProperties(port, "unit1", "T1"));
+        ClientManager clientManager = getClientManager("unit1", "T1");
 
 
         clientManager.connect(ip, port);
@@ -155,7 +176,7 @@ public class IntegrationClientServer {
         outputList.add(responseToStop.toString());
 
 
-        clientManager.setOwnerProperties(new ClientManagerOwnerProperties(port, "unit2", "T2"));
+        clientManager.setOwnerProperties(getOwnerProperties("unit2", "T2"));
         clientManager.connect(ip, port);
         try {
             String responseToConnectAfterStop = serverObservable.take(1).blockingNext().iterator().next().getUserMessage().trim();
@@ -176,12 +197,11 @@ public class IntegrationClientServer {
         List<String> outputList = new ArrayList<>();
 
 
-        ServerManager serverManager = ServerManager.getInstance();
+        ServerManager serverManager = getServerManager();
         Observable<ClientMessage> serverObservable = serverManager.startServer(port);
         var serverEvent = serverManager.getObservableMessageEvent();
 
-        ClientManager clientManager = ClientManager.getInstance();
-        clientManager.setOwnerProperties(new ClientManagerOwnerProperties(port, "unit2", "T2"));
+        ClientManager clientManager = getClientManager("unit2", "T2");
 
 
         clientManager.connect(ip, port);
@@ -199,4 +219,19 @@ public class IntegrationClientServer {
 
         assertThat(outputList).isEqualTo(expectedOutput);
     }
+
+    @NonNull
+    private ClientManager getClientManager(String name, String deviceType) {
+        ClientManager clientManager = ClientManager.getInstance();
+        clientManager.setOwnerProperties(getOwnerProperties(name, deviceType));
+        clientManager.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        return clientManager;
+    }
+
+    @NonNull
+    private OwnerProperties getOwnerProperties(String name, String deviceType) {
+        return new OwnerProperties(port, name, deviceType);
+    }
+
+
 }

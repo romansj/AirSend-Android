@@ -5,6 +5,7 @@ import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_OPEN_APP;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_SHARE_CLIPBOARD;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_STOP_SERVICE;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -19,8 +20,8 @@ import android.os.Build;
 import android.os.IBinder;
 import android.widget.Toast;
 
+import com.cherrydev.airsend.BuildConfig;
 import com.cherrydev.airsend.R;
-import com.cherrydev.airsend.core.ClientManagerOwnerProperties;
 import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.UserMessage;
@@ -28,12 +29,14 @@ import com.cherrydev.airsend.app.service.notification.NotificationUtils;
 import com.cherrydev.airsend.app.utils.IntentActivity;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.app.utils.ServiceUtils;
-import com.cherrydev.airsend.core.ClientMessage;
-import com.cherrydev.airsend.core.MessageType;
-import com.cherrydev.airsend.core.Status;
-import com.cherrydev.airsend.core.server.ServerManager;
-import com.cherrydev.airsend.core.server.ServerMessage;
-import com.cherrydev.airsend.core.server.ServerOperation;
+import com.cherrydev.airsendcore.core.ClientMessage;
+import com.cherrydev.airsendcore.core.MessageType;
+import com.cherrydev.airsendcore.core.OwnerProperties;
+import com.cherrydev.airsendcore.core.Status;
+import com.cherrydev.airsendcore.core.server.ServerManager;
+import com.cherrydev.airsendcore.core.server.ServerMessage;
+import com.cherrydev.airsendcore.core.server.ServerOperation;
+import com.cherrydev.airsendcore.utils.SSLUtils;
 import com.cherrydev.common.ClipboardUtils;
 
 import java.util.List;
@@ -94,6 +97,7 @@ public class ServerService extends Service {
         initNetworkListener();
     }
 
+    @SuppressLint("MissingPermission") // Because fake error, permission is present.
     private void initNetworkListener() {
         networkCallback = new ConnectivityManager.NetworkCallback() {
             // The default network is now: 182
@@ -141,7 +145,8 @@ public class ServerService extends Service {
 
         //todo shouldnt this be done in server ssl?
         ServerManager serverManager = ServerManager.getInstance();
-        var ownerProperties =ClientManagerOwnerProperties. getOwnerProperties(this);
+        serverManager.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        var ownerProperties = MyApplication.getOwnerProperties(this);
         serverManager.setOwnerProperties(ownerProperties);
 
         if (disposableEvent != null) disposableEvent.dispose(); // service killed, but ServerManager instance still lives, thus without disposing you would add a second subscription
@@ -188,7 +193,7 @@ public class ServerService extends Service {
             }
 
 
-            ClientManagerOwnerProperties ownerProperties = ClientManagerOwnerProperties.fromReceived(text);
+            OwnerProperties ownerProperties = OwnerProperties.fromReceived(text);
             if (ownerProperties != null) {
                 Device device = new Device(ownerProperties.getName(), ip, ownerProperties.getPort(), ownerProperties.getClientType(), message.getType() == MessageType.CONNECT ? Status.RUNNING : Status.NOT_RUNNING);
                 databaseManager.addDevice(device).runInBackground().run();
@@ -254,9 +259,6 @@ public class ServerService extends Service {
         //todo assumption... nasty assumption about ID (need proper wrapping around android notification = NotificationUtils)
         startForeground(NotificationUtils.ONGOING_NOTIFICATION_ID, notification);
     }
-
-
-
 
 
     @Override

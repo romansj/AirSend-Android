@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -14,13 +13,26 @@
         android:paddingTop="@dimen/large"
         android:paddingEnd="@dimen/large">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/large"
-            android:text="Outgoing messages"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+            android:orientation="horizontal">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/large"
+                android:layout_weight="1"
+                android:text="Outgoing messages"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Button.IconOnly"
+                android:id="@+id/btn_sent_messages"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                app:icon="@drawable/history" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -148,31 +160,9 @@
 
     </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tv_empty_rv_messages"
-            style="@style/TextAppearance.MaterialComponents.Caption"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/no_messages_yet" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:fadingEdgeLength="@dimen/fading_edge_large_row"
-            android:paddingStart="@dimen/large"
-            android:paddingEnd="@dimen/large"
-            android:requiresFadingEdge="vertical"
-            android:visibility="gone"
-            tools:listitem="@layout/row_message" />
-    </FrameLayout>
+    <include
+        android:id="@+id/include"
+        layout="@layout/list_and_empty_text" />
 
 
 </LinearLayout>

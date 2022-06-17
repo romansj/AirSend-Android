@@ -9,8 +9,13 @@ import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
+import com.cherrydev.airsend.BuildConfig;
+import com.cherrydev.airsend.R;
+import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
-import com.cherrydev.airsend.core.server.ServerManager;
+import com.cherrydev.airsendcore.core.ClientMessage;
+import com.cherrydev.airsendcore.core.server.ServerManager;
+import com.cherrydev.airsendcore.utils.SSLUtils;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -53,7 +58,7 @@ public class ServerTests {
 
     @Test
     public void runningServerDoesNotRunTwice() {
-        ServerManager serverManager = ServerManager.getInstance();
+        ServerManager serverManager = getServerManager();
 
         Observable<ClientMessage> messageObservableStart = serverManager.startServer(port);
         Observable<ClientMessage> messageObservableStartAgain = serverManager.startServer(port);
@@ -64,7 +69,7 @@ public class ServerTests {
 
     @Test
     public void restartedServerReturnsNewObservable() {
-        ServerManager serverManager = ServerManager.getInstance();
+        ServerManager serverManager = getServerManager();
 
         Observable<ClientMessage> messageObservableStart = serverManager.startServer(port);
         serverManager.stopServer();
@@ -72,6 +77,12 @@ public class ServerTests {
 
         // two diff instances unless cleanup was skipped
         assertThat(messageObservableStartAgain).isNotSameInstanceAs(messageObservableStart);
+    }
+
+    private ServerManager getServerManager() {
+        ServerManager serverManager = ServerManager.getInstance();
+        serverManager.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        return serverManager;
     }
 
 

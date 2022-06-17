@@ -70,6 +70,46 @@
         </com.google.android.material.card.MaterialCardView>
 
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            app:cardCornerRadius="@dimen/large"
+            app:cardElevation="@dimen/card_elevation">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/large"
+                android:orientation="vertical">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_open_links_on_click"
+                    style="@style/TextAppearance.MaterialComponents.Body1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:checked="true"
+                    android:minWidth="0dp"
+                    android:minHeight="0dp"
+                    android:padding="@dimen/medium"
+                    android:tag="@string/setting_open_links_on_click"
+                    android:text="@string/setting_open_links_on_click"
+                    android:textSize="14sp" />
+
+                <TextView
+                    style="@style/TextAppearance.MaterialComponents.Caption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/medium"
+                    android:text="@string/setting_open_links_on_click_description" />
+
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
         <TextView
             style="@style/TextAppearance.MaterialComponents.Headline5"
             android:layout_width="match_parent"
@@ -441,6 +481,7 @@
                         android:id="@+id/imageViewAbout"
                         android:layout_width="144dp"
                         android:layout_height="144dp"
+                        android:tag="@string/setting_debug_options"
                         app:srcCompat="@mipmap/ic_launcher" />
                 </com.google.android.material.card.MaterialCardView>
 
