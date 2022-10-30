@@ -52,12 +52,13 @@ public class ClientManager {
 
 
     //could update message right here and send it to a handler that implements an interface, just like clientHandler - messageStatusHandler
+    @SuppressLint("CheckResult")
     private void sendMessage(ClientMessage message) {
         executor.submit(() -> {
-            for (int i = 0; i < message.getMessage().length(); i++) {
-                var ascii = message.getMessage().charAt(i);
-                System.out.println("ascii " + ascii);
-            }
+            // for (int i = 0; i < message.getMessage().length(); i++) {
+            //     var ascii = message.getMessage().charAt(i);
+            //     System.out.println("ascii " + ascii);
+            // }
 
             if (messageHandler != null) {
                 if (message.getIdentifier() == -1) {
@@ -71,7 +72,7 @@ public class ClientManager {
             PublishSubject<ClientResult> observableClientOut = notifyClient(runningClient, message);
 
 
-            observableClientOut.take(1).timeout(10, TimeUnit.SECONDS).subscribe(clientResult -> {
+            observableClientOut.take(1).timeout(20, TimeUnit.SECONDS).subscribe(clientResult -> {
                 Timber.d("client says " + clientResult.toString());
 
                 if (clientResult.isClientRunning()) {

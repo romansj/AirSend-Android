@@ -36,8 +36,8 @@ import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.databinding.FragmentMessagesBinding;
 import com.cherrydev.airsendcore.core.client.ClientManager;
 import com.cherrydev.common.ClipboardUtils;
-import com.cherrydev.common.ConfirmDialog;
-import com.cherrydev.dialogs.WrapperDialogFragment;
+import com.cherrydev.dialogs.confirm.DialogConfirm;
+import com.cherrydev.dialogs.utils.WrapperDialogFragment;
 import com.cherrydev.keyboard.KeyboardUtils;
 import com.google.android.material.button.MaterialButton;
 
@@ -98,7 +98,7 @@ public class FragmentMessages extends Fragment {
 
 
         binding.btnDeleteMessages.setOnClickListener(v -> {
-            var confirmDialog = ConfirmDialog.newInstance(getString(R.string.delete_messages_question), getString(R.string.this_action_cannot_be_undone),
+            var confirmDialog = DialogConfirm.newInstance(getString(R.string.delete_messages_question), getString(R.string.this_action_cannot_be_undone),
                     getString(R.string.delete), getString(R.string.go_back), R.style.ThemeOverlay_MaterialComponents_MaterialAlertDialog);
 
             confirmDialog.setListener(() -> databaseManager.deleteAllMessages().runInBackground().run());
