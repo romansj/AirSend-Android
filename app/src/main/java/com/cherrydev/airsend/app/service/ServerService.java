@@ -237,7 +237,7 @@ public class ServerService extends Service {
     private void initServerNotification(int flags) {
         Intent notificationIntent = new Intent(this, IntentActivity.class);
         notificationIntent.setAction(ACTION_OPEN_APP.getAction());
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, flags);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, flags | PendingIntent.FLAG_IMMUTABLE);
 
 
         Intent sendIntent = new Intent(this, IntentActivity.class);
@@ -245,8 +245,8 @@ public class ServerService extends Service {
         sendIntent.setAction(ACTION_SHARE_CLIPBOARD.getAction());
         stopIntent.setAction(ACTION_STOP_SERVICE.getAction());
 
-        PendingIntent pendingIntentSend = PendingIntent.getActivity(this, 0, sendIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        PendingIntent pendingIntentStop = PendingIntent.getActivity(this, 0, stopIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        PendingIntent pendingIntentSend = PendingIntent.getActivity(this, 0, sendIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntentStop = PendingIntent.getActivity(this, 0, stopIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         MyAction actionSend = new MyAction(ACTION_SHARE_CLIPBOARD, R.drawable.message_outline, pendingIntentSend);
         MyAction actionStop = new MyAction(ACTION_STOP_SERVICE, R.drawable.stop, pendingIntentStop);

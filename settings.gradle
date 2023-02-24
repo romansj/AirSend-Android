@@ -16,11 +16,11 @@ include keyboardP
 include dialogsP
 
 
-def CommonToolsDir = 'C:\\_dev\\_android\\CommonTools'
+def CommonToolsDir = '../CommonTools'
 
-project(commonP).projectDir = file(CommonToolsDir + '\\common')
-project(fileP).projectDir = file(CommonToolsDir + '\\file')
-project(timeP).projectDir = file(CommonToolsDir + '\\time')
-project(keyboardP).projectDir = file(CommonToolsDir + '\\keyboard')
-project(dialogsP).projectDir = file(CommonToolsDir + '\\dialogs')
+project(commonP).projectDir = file(CommonToolsDir + '/common')
+project(fileP).projectDir = file(CommonToolsDir + '/file')
+project(timeP).projectDir = file(CommonToolsDir + '/time')
+project(keyboardP).projectDir = file(CommonToolsDir + '/keyboard')
+project(dialogsP).projectDir = file(CommonToolsDir + '/dialogs')
 
