@@ -53,7 +53,7 @@ public class ServerService extends Service {
     private static Intent serviceIntent = new Intent(MyApplication.getInstance().getApplicationContext(), ServerService.class);
     private ConnectivityManager.NetworkCallback networkCallback;
 
-    ExecutorService executorService = Executors.newFixedThreadPool(1);
+    private ExecutorService executorService = Executors.newFixedThreadPool(1);
 
 
     private Disposable disposableMssg;

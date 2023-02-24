@@ -5,6 +5,7 @@ import com.cherrydev.airsendcore.core.Constants;
 import com.cherrydev.airsendcore.core.MessageType;
 import com.cherrydev.airsendcore.core.OwnerProperties;
 import com.cherrydev.airsendcore.core.ReceivedConverter;
+import com.cherrydev.time.CommonTimeUtils;
 import com.google.common.truth.Truth;
 
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 class ClientMessageTest {
@@ -43,7 +45,7 @@ class ClientMessageTest {
                 Arguments.of(new ClientMessage("ipv4", 0, MessageType.DISCONNECT), Constants.CLOSE),
 
                 // message ends with EOF with full constructor
-                Arguments.of(new ClientMessage("ipv4", 0, null, "Test", MessageType.MESSAGE, ""), "Test" + Constants.EOF)
+                Arguments.of(new ClientMessage("ipv4", 0, null, "Test", MessageType.MESSAGE, CommonTimeUtils.Convert.toMillis(LocalDateTime.now())), "Test" + Constants.EOF)
         );
     }
 
