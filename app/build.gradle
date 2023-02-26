@@ -1,12 +1,21 @@
 apply plugin: 'com.android.application'
 
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
+
 def apikeyPropertiesFile = rootProject.file("keys.properties")
 def apikeyProperties = new Properties()
 apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
 
 
 android {
+    namespace 'com.cherrydev.airsend'
+
     signingConfigs {
         release {
             storeFile file(apikeyProperties['keystoreLocation'])
@@ -33,8 +42,8 @@ android {
 
         buildConfigField("String", "CERT_KEY", apikeyProperties['CERT_KEY'])
 
-        // so espresso doesn't wait arbitrary amount of time and crash
         testOptions {
+        // so espresso doesn't wait arbitrary amount of time and crash
             animationsDisabled = true
         }
     }
@@ -43,22 +52,22 @@ android {
         debug {
             signingConfig debug.signingConfig
 
-            //for instrumented test coverage reporting
+            // this enables instrumented test coverage reporting
             testCoverageEnabled = true
 
             //debuggable true
             shrinkResources false
             minifyEnabled false
-            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
         release {
-//            minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
             signingConfig signingConfigs.release
         }
     }
+
     compileOptions {
         coreLibraryDesugaringEnabled true
 
@@ -70,7 +79,7 @@ android {
         execution 'ANDROIDX_TEST_ORCHESTRATOR'
 
         unitTests.all {
-            useJUnitPlatform() // <--- this is the important part
+            useJUnitPlatform()
         }
     }
 
@@ -81,8 +90,6 @@ android {
     buildFeatures {
         viewBinding true
     }
-
-    namespace 'com.cherrydev.airsend'
 }
 
 
@@ -91,8 +98,6 @@ dependencies {
     implementation project(path: ':AirSendCore')
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
-//    implementation 'androidx.core:core-ktx:1.3.2'
-//    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'androidx.appcompat:appcompat:1.4.0'
