@@ -30,7 +30,8 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.ViewHolder> {
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(com.cherrydev.dialogs.R.layout.row_text, parent, false);
+
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(io.github.romansj.tools.dialogs.R.layout.row_text, parent, false);
         return new ViewHolder(itemView);
     }
 
@@ -49,7 +50,7 @@ public class RvAdapter extends RecyclerView.Adapter<RvAdapter.ViewHolder> {
 
         ViewHolder(View itemView) {
             super(itemView);
-            textView = itemView.findViewById(com.cherrydev.dialogs.R.id.tv);
+            textView = itemView.findViewById(io.github.romansj.tools.dialogs.R.id.tv);
         }
     }
 

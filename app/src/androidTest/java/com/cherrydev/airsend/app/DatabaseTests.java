@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 
@@ -129,7 +130,7 @@ public class DatabaseTests {
         String text = textStr;
         MessageType type = MessageType.MESSAGE;
         String dateTime = CommonTimeUtils.Format.toFormattedDateTimeString(LocalDateTime.now(), true);
-        return new UserMessage(ip, port, text, type, dateTime);
+        return new UserMessage(ip, port, text, type, Instant.now().toEpochMilli());
     }
 
     @NonNull
@@ -138,7 +139,7 @@ public class DatabaseTests {
         String text = textStr;
         MessageType type = MessageType.MESSAGE;
         String dateTime = CommonTimeUtils.Format.toFormattedDateTimeString(LocalDateTime.now(), true);
-        return new UserMessage(ip, port, text, type, dateTime);
+        return new UserMessage(ip, port, text, type, Instant.now().toEpochMilli());
     }
 
 

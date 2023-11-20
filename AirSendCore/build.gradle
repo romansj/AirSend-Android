@@ -32,23 +32,29 @@ android {
             useJUnitPlatform() // <--- this is the important part
         }
     }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
 }
 
 dependencies {
-
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation project(path: ':app:time')
-    implementation project(path: ':app:common')
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
+    implementation libs.common
+    implementation libs.time
 
 
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.4.0'
-    implementation 'androidx.navigation:navigation-fragment:2.3.5'
-    implementation 'androidx.navigation:navigation-ui:2.3.5'
+
+
+    implementation libs.constraintlayout
+    implementation libs.appcompat
+    implementation libs.legacy.support.v4
+    implementation libs.lifecycle.livedata
+    implementation libs.lifecycle.viewmodel
+    implementation libs.androidx.navigation.fragment
+    implementation libs.navigation.ui
 
 
     //region  *******************************
@@ -60,13 +66,13 @@ dependencies {
 
     // jUnit
     def jupiter = '5.7.1'
-    testImplementation "org.junit.jupiter:junit-jupiter-params:$jupiter"
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter"
+    testImplementation libs.junit.jupiter.params
+    testImplementation libs.junit.jupiter.api
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter"
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation "org.junit.jupiter:junit-jupiter-params:$jupiter"
+    androidTestImplementation libs.junit.jupiter.params
     androidTestRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$jupiter"
-    androidTestImplementation "org.junit.jupiter:junit-jupiter-api:$jupiter"
+    androidTestImplementation libs.junit.jupiter.api
     androidTestImplementation 'junit:junit:4.13.2'
 
 
@@ -101,14 +107,7 @@ dependencies {
 
 
     // Espresso dependencies
-    def espresso_version = '3.3.0'
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
-    androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso_version"
-    androidTestImplementation "androidx.test.espresso:espresso-accessibility:$espresso_version"
-    androidTestImplementation "androidx.test.espresso:espresso-web:$espresso_version"
-    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:$espresso_version"
-    androidTestImplementation "androidx.test.espresso:espresso-idling-resource:$espresso_version"
+    androidTestImplementation libs.bundles.espresso
 
 
     //endregion *******************************

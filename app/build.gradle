@@ -25,7 +25,7 @@ android {
         }
     }
     compileSdkVersion 33
-    buildToolsVersion '30.0.3'
+    buildToolsVersion '33.0.1'
 
     defaultConfig {
         configurations.all {
@@ -95,17 +95,27 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    coreLibraryDesugaring libs.desugar.jdk.libs
+
     implementation project(path: ':AirSendCore')
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+    // region shared libraries
+    def commonToolsVersion = "0.0.2"
+    implementation libs.common
+    implementation libs.dialogs
+    implementation libs.file
+    implementation libs.keyboard
+    implementation libs.time
+    // endregion
 
 
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.4.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.4.0'
-    implementation 'androidx.navigation:navigation-fragment:2.3.5'
-    implementation 'androidx.navigation:navigation-ui:2.3.5'
+    implementation libs.constraintlayout
+    implementation libs.appcompat
+    implementation libs.legacy.support.v4
+    implementation libs.lifecycle.livedata
+    implementation libs.lifecycle.viewmodel
+    implementation libs.androidx.navigation.fragment
+    implementation libs.navigation.ui
 
 
     //region  *******************************
@@ -237,10 +247,6 @@ dependencies {
     implementation("com.google.guava:guava:31.0.1-android")
 
 
-    implementation project(':app:common')
-    implementation project(':app:file')
-    implementation project(':app:time')
-    implementation project(':app:keyboard')
-    implementation project(':app:dialogs')
+
 }
 

@@ -1,0 +1,59 @@
+[versions]
+commonToolsVersion = "0.0.3"
+
+desugar_jdk_libsVersion = "2.0.4"
+
+espressoCore = "3.5.1"
+
+appcompatVersion = "1.4.0"
+constraintlayoutVersion = "2.1.2"
+jupiter = "5.7.1"
+lifecycleVersion = "2.4.0"
+legacySupportV4Version = "1.0.0"
+navigationVersion = "2.3.5"
+
+
+
+[libraries]
+common = { module = "io.github.romansj.tools:common", version.ref = "commonToolsVersion" }
+dialogs = { module = "io.github.romansj.tools:dialogs", version.ref = "commonToolsVersion" }
+keyboard = { module = "io.github.romansj.tools:keyboard", version.ref = "commonToolsVersion" }
+file = { module = "io.github.romansj.tools:file", version.ref = "commonToolsVersion" }
+time = { module = "io.github.romansj.tools:time", version.ref = "commonToolsVersion" }
+
+desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libsVersion" }
+
+androidx-espresso-accessibility = { module = "androidx.test.espresso:espresso-accessibility", version.ref = "espressoCore" }
+androidx-espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoCore" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-espresso-idling-resource = { module = "androidx.test.espresso:espresso-idling-resource", version.ref = "espressoCore" }
+androidx-espresso-idling-concurrent = { module = "androidx.test.espresso.idling:idling-concurrent", version.ref = "espressoCore" }
+androidx-espresso-web = { module = "androidx.test.espresso:espresso-web", version.ref = "espressoCore" }
+androidx-espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoCore" }
+
+
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationVersion" }
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
+constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayoutVersion" }
+
+junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "jupiter" }
+junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "jupiter" }
+
+lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycleVersion" }
+lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleVersion" }
+legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4Version" }
+navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationVersion" }
+
+
+[bundles]
+espresso = [
+    "androidx-espresso-accessibility",
+    "androidx-espresso-contrib",
+    "androidx-espresso-core",
+    "androidx-espresso-idling-resource",
+    "androidx-espresso-idling-concurrent",
+    "androidx-espresso-web",
+    "androidx-espresso-intents"
+]
+
+[plugins]

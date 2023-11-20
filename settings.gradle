@@ -1,26 +1,35 @@
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        jcenter()
+    }
+}
+
 rootProject.name = 'AirSend'
 include ':app'
 include ':AirSendCore'
-
-def commonP = ':app:common'
-def fileP = ':app:file'
-def timeP = ':app:time'
-def keyboardP = ':app:keyboard'
-def dialogsP = ':app:dialogs'
-
-
-include commonP
-include fileP
-include timeP
-include keyboardP
-include dialogsP
-
-
-def CommonToolsDir = '../CommonTools'
-
-project(commonP).projectDir = file(CommonToolsDir + '/common')
-project(fileP).projectDir = file(CommonToolsDir + '/file')
-project(timeP).projectDir = file(CommonToolsDir + '/time')
-project(keyboardP).projectDir = file(CommonToolsDir + '/keyboard')
-project(dialogsP).projectDir = file(CommonToolsDir + '/dialogs')
+//def commonP = ':tools:common'
+//def fileP = ':tools:file'
+//def timeP = ':tools:time'
+//def keyboardP = ':tools:keyboard'
+//def dialogsP = ':tools:dialogs'
+//
+//
+//include commonP
+//include fileP
+//include timeP
+//include keyboardP
+//include dialogsP
+//
+//
+//def CommonToolsDir = '../CommonToolsAndroid/tools'
+//
+//project(commonP).projectDir = file(CommonToolsDir + '/common')
+//project(fileP).projectDir = file(CommonToolsDir + '/file')
+//project(timeP).projectDir = file(CommonToolsDir + '/time')
+//project(keyboardP).projectDir = file(CommonToolsDir + '/keyboard')
+//project(dialogsP).projectDir = file(CommonToolsDir + '/dialogs')
 
