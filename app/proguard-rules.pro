@@ -23,3 +23,6 @@
 
 -keep class org.xmlpull.** { *; }
 -keepclassmembers class org.xmlpull.** { *; }
+
+#-keep class org.slf4j.** { *; }
+#-keepclassmembers class org.slf4j.** { *; }
