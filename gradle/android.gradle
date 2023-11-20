@@ -1,0 +1,83 @@
+def apikeyPropertiesFile = rootProject.file("keys.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
+
+android {
+    namespace 'com.cherrydev.airsend'
+
+    signingConfigs {
+        release {
+            storeFile file(String.valueOf(System.getenv("KEYSTORE_PATH_ASAKS")))
+            storePassword apikeyProperties['keystorePw']
+            keyPassword apikeyProperties['keyPw']
+            keyAlias 'key0'
+        }
+    }
+    compileSdkVersion 33
+    buildToolsVersion '33.0.1'
+
+    defaultConfig {
+        configurations.all {
+            resolutionStrategy { force 'androidx.core:core:1.6.0' }
+        }
+        applicationId "com.cherrydev.airsend"
+        minSdkVersion 26
+        targetSdkVersion 33
+        versionCode 8
+        versionName "8.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+
+        buildConfigField("String", "CERT_KEY", apikeyProperties['CERT_KEY'])
+
+        testOptions {
+            // so espresso doesn't wait arbitrary amount of time and crash
+            animationsDisabled = true
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig debug.signingConfig
+
+            // this enables instrumented test coverage reporting
+            testCoverageEnabled = true
+
+            //debuggable true
+            shrinkResources false
+            minifyEnabled false
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
+
+    packagingOptions {
+        resources.excludes.add("META-INF/*")
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+}

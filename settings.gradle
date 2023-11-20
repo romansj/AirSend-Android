@@ -21,25 +21,3 @@ dependencyResolutionManagement {
 rootProject.name = 'AirSend'
 include ':app'
 include ':AirSendCore'
-//def commonP = ':tools:common'
-//def fileP = ':tools:file'
-//def timeP = ':tools:time'
-//def keyboardP = ':tools:keyboard'
-//def dialogsP = ':tools:dialogs'
-//
-//
-//include commonP
-//include fileP
-//include timeP
-//include keyboardP
-//include dialogsP
-//
-//
-//def CommonToolsDir = '../CommonToolsAndroid/tools'
-//
-//project(commonP).projectDir = file(CommonToolsDir + '/common')
-//project(fileP).projectDir = file(CommonToolsDir + '/file')
-//project(timeP).projectDir = file(CommonToolsDir + '/time')
-//project(keyboardP).projectDir = file(CommonToolsDir + '/keyboard')
-//project(dialogsP).projectDir = file(CommonToolsDir + '/dialogs')
-
