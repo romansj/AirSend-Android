@@ -23,6 +23,7 @@
 # Logs and databases #
 ######################
 *.log
+*.hprof
 
 # OS generated files #
 ######################

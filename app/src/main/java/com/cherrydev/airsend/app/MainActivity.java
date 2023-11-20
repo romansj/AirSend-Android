@@ -16,7 +16,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.util.Pair;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.cherrydev.airsend.BuildConfig;
@@ -31,6 +30,8 @@ import com.cherrydev.airsend.databinding.ActivityMainBinding;
 import com.cherrydev.airsendcore.core.client.ClientManager;
 import com.cherrydev.airsendcore.utils.SSLUtils;
 import com.cherrydev.common.MimeTypes;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.stream.Collectors;
 
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
                 ClientManager.getInstance().setOwnerProperties(ownerProperties);
 
                 databaseManager.getDb().getAllDevices().subscribeOn(Schedulers.io()).subscribe(devices -> {
-                    var pairs = devices.stream().map(p -> new Pair<>(p.getIP(), p.getPort())).collect(Collectors.toList());
+                    var pairs = devices.stream().map(p -> Pair.of(p.getIP(), p.getPort())).collect(Collectors.toList());
                     ClientManager.getInstance().connectToList(pairs);
                 });
             }

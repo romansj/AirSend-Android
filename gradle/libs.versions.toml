@@ -1,21 +1,33 @@
 [versions]
 commonToolsVersion = "0.0.3"
 
+commonsLang3Version = "3.13.0"
+
+
 desugar_jdk_libsVersion = "2.0.4"
 
 espressoCore = "3.5.1"
 
 appcompatVersion = "1.4.0"
 constraintlayoutVersion = "2.1.2"
+googleTruth = "1.1.3"
 jupiter = "5.7.1"
+lifecycleExtensions = "2.2.0"
 lifecycleVersion = "2.4.0"
 legacySupportV4Version = "1.0.0"
+lifecycleViewmodelSavedstate = "2.3.1"
 navigationVersion = "2.3.5"
+roomRuntime = "2.5.0"
+rxandroid = "3.0.0"
+rxbinding = "4.0.0"
+rxjava = "3.0.3"
+truth = "1.5.0"
 
 
 
 [libraries]
 common = { module = "io.github.romansj.tools:common", version.ref = "commonToolsVersion" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3Version" }
 dialogs = { module = "io.github.romansj.tools:dialogs", version.ref = "commonToolsVersion" }
 keyboard = { module = "io.github.romansj.tools:keyboard", version.ref = "commonToolsVersion" }
 file = { module = "io.github.romansj.tools:file", version.ref = "commonToolsVersion" }
@@ -23,6 +35,10 @@ time = { module = "io.github.romansj.tools:time", version.ref = "commonToolsVers
 
 desugar_jdk_libs = { module = "com.android.tools:desugar_jdk_libs", version.ref = "desugar_jdk_libsVersion" }
 
+appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
+constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayoutVersion" }
+
+# Testing
 androidx-espresso-accessibility = { module = "androidx.test.espresso:espresso-accessibility", version.ref = "espressoCore" }
 androidx-espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoCore" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
@@ -31,18 +47,29 @@ androidx-espresso-idling-concurrent = { module = "androidx.test.espresso.idling:
 androidx-espresso-web = { module = "androidx.test.espresso:espresso-web", version.ref = "espressoCore" }
 androidx-espresso-intents = { module = "androidx.test.espresso:espresso-intents", version.ref = "espressoCore" }
 
-
-androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationVersion" }
-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayoutVersion" }
-
 junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "jupiter" }
 junit-jupiter-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "jupiter" }
+google-truth = { module = "com.google.truth:truth", version.ref = "googleTruth" }
+androidx-truth = { module = "androidx.test.ext:truth", version.ref = "truth" }
+
+# RX
+rxandroid = { module = "io.reactivex.rxjava3:rxandroid", version.ref = "rxandroid" }
+rxbinding = { module = "com.jakewharton.rxbinding4:rxbinding", version.ref = "rxbinding" }
+rxjava = { module = "io.reactivex.rxjava3:rxjava", version.ref = "rxjava" }
 
 lifecycle-livedata = { module = "androidx.lifecycle:lifecycle-livedata", version.ref = "lifecycleVersion" }
 lifecycle-viewmodel = { module = "androidx.lifecycle:lifecycle-viewmodel", version.ref = "lifecycleVersion" }
 legacy-support-v4 = { module = "androidx.legacy:legacy-support-v4", version.ref = "legacySupportV4Version" }
+androidx-navigation-fragment = { module = "androidx.navigation:navigation-fragment", version.ref = "navigationVersion" }
 navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationVersion" }
+
+androidx-lifecycle-common-java8 = { module = "androidx.lifecycle:lifecycle-common-java8", version.ref = "lifecycleVersion" }
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
+androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycleViewmodelSavedstate" }
+
+# Room DB
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
+androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "roomRuntime" }
 
 
 [bundles]

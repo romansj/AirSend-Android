@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -40,6 +39,8 @@ import com.cherrydev.dialogs.confirm.DialogConfirm;
 import com.cherrydev.dialogs.utils.WrapperDialogFragment;
 import com.cherrydev.keyboard.KeyboardUtils;
 import com.google.android.material.button.MaterialButton;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +226,7 @@ public class FragmentMessages extends Fragment {
     void sendMessage(String text) {
         ClientManager instance = ClientManager.getInstance();
         databaseManager.getDb().getAllDevices().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(params -> {
-            var pairs = params.stream().map(p -> new Pair<>(p.getIP(), p.getPort())).collect(Collectors.toList());
+            var pairs = params.stream().map(p -> Pair.of(p.getIP(), p.getPort())).collect(Collectors.toList());
             instance.messageClients(pairs, text);
         });
     }
@@ -247,12 +248,12 @@ public class FragmentMessages extends Fragment {
 
             // your devices
             if (Objects.equals(messageViewModel.getRecipientChoice(), messageViewModel.getRecipientChoices().get(1))) {
-                var pairs = messageViewModel.getSelectedDevices().stream().map(p -> new Pair<>(p.getIP(), p.getPort())).collect(Collectors.toList());
+                var pairs = messageViewModel.getSelectedDevices().stream().map(p -> Pair.of(p.getIP(), p.getPort())).collect(Collectors.toList());
                 ClientManager.getInstance().messageClients(pairs, text);
 
             } else {
                 databaseManager.getDb().getAllDevices().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(devices -> {
-                    var pairs = devices.stream().map(p -> new Pair<>(p.getIP(), p.getPort())).collect(Collectors.toList());
+                    var pairs = devices.stream().map(p -> Pair.of(p.getIP(), p.getPort())).collect(Collectors.toList());
                     ClientManager.getInstance().messageClients(pairs, text);
                 });
             }

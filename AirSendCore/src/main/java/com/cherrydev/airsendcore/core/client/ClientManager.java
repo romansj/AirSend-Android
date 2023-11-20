@@ -4,13 +4,14 @@ package com.cherrydev.airsendcore.core.client;
 import android.annotation.SuppressLint;
 
 import androidx.annotation.NonNull;
-import androidx.core.util.Pair;
 
 import com.cherrydev.airsendcore.core.ClientMessage;
 import com.cherrydev.airsendcore.core.MessageType;
 import com.cherrydev.airsendcore.core.OwnerProperties;
 import com.cherrydev.airsendcore.core.Status;
 import com.cherrydev.airsendcore.utils.ObservableSubject;
+
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -196,8 +197,8 @@ public class ClientManager {
 
     public void disconnectAll() {
         List<Pair<String, Integer>> listToUpdate = new ArrayList<>();
-        threadInfoList.forEach((s, clientThread) -> listToUpdate.add(new Pair<>(s, clientThread.getPort())));
-        listToUpdate.forEach((item) -> disconnect(item.first, item.second, false));
+        threadInfoList.forEach((s, clientThread) -> listToUpdate.add(Pair.of(s, clientThread.getPort())));
+        listToUpdate.forEach((item) -> disconnect(item.getLeft(), item.getRight(), false));
     }
 
 
@@ -222,11 +223,11 @@ public class ClientManager {
     }
 
     public void connectToList(List<Pair<String, Integer>> list) {
-        list.forEach(pair -> connect(pair.first, pair.second));
+        list.forEach(pair -> connect(pair.getLeft(), pair.getRight()));
     }
 
     public void messageClients(List<Pair<String, Integer>> list, String message) {
-        list.forEach(pair -> messageClient(pair.first, pair.second, message));
+        list.forEach(pair -> messageClient(pair.getLeft(), pair.getRight(), message));
     }
 
 
