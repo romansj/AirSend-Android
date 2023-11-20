@@ -23,8 +23,8 @@ import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.databinding.DialogSentMessagesBinding;
-import com.cherrydev.airsendcore.core.MessageType;
-import com.cherrydev.airsendcore.core.client.ClientManager;
+import io.github.romansj.core.MessageType;
+import io.github.romansj.core.client.ClientManager;
 import com.cherrydev.common.ClipboardUtils;
 
 import java.time.LocalDateTime;

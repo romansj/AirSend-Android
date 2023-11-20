@@ -17,7 +17,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     coreLibraryDesugaring libs.desugar.jdk.libs
 
-    implementation project(":AirSendCore")
+    implementation(libs.airsend.core.java)
+
+    // implementation project(":AirSendCore")
 
     // region shared libraries
     implementation libs.common

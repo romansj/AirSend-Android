@@ -11,9 +11,9 @@ import androidx.room.Update;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.database.models.UserMessage;
-import com.cherrydev.airsendcore.core.MessageType;
-import com.cherrydev.airsendcore.core.SentStatus;
-import com.cherrydev.airsendcore.core.Status;
+import io.github.romansj.core.MessageType;
+import io.github.romansj.core.SentStatus;
+import io.github.romansj.core.Status;
 
 import java.util.ArrayList;
 import java.util.List;

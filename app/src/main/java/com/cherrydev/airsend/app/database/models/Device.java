@@ -5,7 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.cherrydev.airsendcore.core.Status;
+import io.github.romansj.core.Status;
 
 @Entity
 public class Device {

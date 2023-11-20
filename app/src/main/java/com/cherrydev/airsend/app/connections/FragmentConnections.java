@@ -29,7 +29,6 @@ import com.cherrydev.airsend.app.utils.ClipboardUtils;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.databinding.FragmentConnectionsBinding;
-import com.cherrydev.airsendcore.core.client.ClientManager;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -38,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.romansj.core.client.ClientManager;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 

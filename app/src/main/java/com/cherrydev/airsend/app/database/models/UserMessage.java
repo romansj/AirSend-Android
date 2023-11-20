@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.cherrydev.airsend.app.messages.IMessage;
-import com.cherrydev.airsendcore.core.MessageType;
+import io.github.romansj.core.MessageType;
 import com.cherrydev.time.CommonTimeUtils;
 
 import java.time.Instant;

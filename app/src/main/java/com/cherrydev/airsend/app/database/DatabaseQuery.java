@@ -1,7 +1,7 @@
 package com.cherrydev.airsend.app.database;
 
-import com.cherrydev.airsendcore.utils.RxHelper;
-import com.cherrydev.common.MyResult;
+import io.github.romansj.utils.MyResult;
+import io.github.romansj.utils.RxHelper;
 
 public class DatabaseQuery {
     private Runnable runnable;

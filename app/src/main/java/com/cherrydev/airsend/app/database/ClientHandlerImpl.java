@@ -3,10 +3,10 @@ package com.cherrydev.airsend.app.database;
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 
 import com.cherrydev.airsend.app.database.models.Device;
-import com.cherrydev.airsendcore.core.ClientMessage;
-import com.cherrydev.airsendcore.core.OwnerProperties;
-import com.cherrydev.airsendcore.core.Status;
-import com.cherrydev.airsendcore.core.client.IClientHandler;
+import io.github.romansj.core.ClientMessage;
+import io.github.romansj.core.OwnerProperties;
+import io.github.romansj.core.Status;
+import io.github.romansj.core.client.IClientHandler;
 
 import java.util.List;
 

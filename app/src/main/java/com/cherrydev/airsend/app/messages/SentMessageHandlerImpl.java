@@ -5,10 +5,10 @@ import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 import androidx.annotation.Nullable;
 
 import com.cherrydev.airsend.app.database.models.SentMessage;
-import com.cherrydev.airsendcore.core.ClientMessage;
-import com.cherrydev.airsendcore.core.SentStatus;
-import com.cherrydev.airsendcore.core.client.ClientResult;
-import com.cherrydev.airsendcore.core.client.ISentMessageHandler;
+import io.github.romansj.core.ClientMessage;
+import io.github.romansj.core.SentStatus;
+import io.github.romansj.core.client.ClientResult;
+import io.github.romansj.core.client.ISentMessageHandler;
 
 public class SentMessageHandlerImpl implements ISentMessageHandler {
     @Override

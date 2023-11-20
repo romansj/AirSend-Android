@@ -18,10 +18,10 @@ import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
-import com.cherrydev.airsendcore.core.OwnerProperties;
-import com.cherrydev.airsendcore.core.Status;
-import com.cherrydev.airsendcore.core.client.ClientManager;
-import com.cherrydev.airsendcore.utils.SSLUtils;
+import io.github.romansj.core.OwnerProperties;
+import io.github.romansj.core.Status;
+import io.github.romansj.core.client.ClientManager;
+import io.github.romansj.utils.SSLUtils;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

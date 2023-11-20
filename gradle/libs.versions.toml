@@ -1,5 +1,7 @@
 [versions]
 commonToolsVersion = "0.0.3"
+coreJavaVersion = "2.0.1"
+
 commonsLang3Version = "3.13.0"
 guavaVersion = "31.0.1-android"
 
@@ -48,6 +50,8 @@ dialogs = { module = "io.github.romansj.tools:dialogs", version.ref = "commonToo
 keyboard = { module = "io.github.romansj.tools:keyboard", version.ref = "commonToolsVersion" }
 file = { module = "io.github.romansj.tools:file", version.ref = "commonToolsVersion" }
 time = { module = "io.github.romansj.tools:time", version.ref = "commonToolsVersion" }
+
+airsend-core-java = { module = "io.github.romansj.airsend:core-java", version.ref = "coreJavaVersion" }
 
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3Version" }
 guava = { module = "com.google.guava:guava", version.ref = "guavaVersion" }

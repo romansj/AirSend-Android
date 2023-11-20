@@ -33,7 +33,7 @@ import com.cherrydev.airsend.app.messages.recipient.DialogChooseRecipients;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.databinding.FragmentMessagesBinding;
-import com.cherrydev.airsendcore.core.client.ClientManager;
+import io.github.romansj.core.client.ClientManager;
 import com.cherrydev.common.ClipboardUtils;
 import com.cherrydev.dialogs.confirm.DialogConfirm;
 import com.cherrydev.dialogs.utils.WrapperDialogFragment;

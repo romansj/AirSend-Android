@@ -7,8 +7,8 @@ import androidx.room.Room;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.database.models.UserMessage;
-import com.cherrydev.airsendcore.core.SentStatus;
-import com.cherrydev.airsendcore.core.Status;
+import io.github.romansj.core.SentStatus;
+import io.github.romansj.core.Status;
 
 import java.util.List;
 

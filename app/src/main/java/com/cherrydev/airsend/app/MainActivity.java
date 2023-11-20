@@ -27,8 +27,8 @@ import com.cherrydev.airsend.app.utils.AppUtils;
 import com.cherrydev.airsend.app.utils.IntentAction;
 import com.cherrydev.airsend.app.utils.NavUtils;
 import com.cherrydev.airsend.databinding.ActivityMainBinding;
-import com.cherrydev.airsendcore.core.client.ClientManager;
-import com.cherrydev.airsendcore.utils.SSLUtils;
+import io.github.romansj.core.client.ClientManager;
+import io.github.romansj.utils.SSLUtils;
 import com.cherrydev.common.MimeTypes;
 
 import org.apache.commons.lang3.tuple.Pair;

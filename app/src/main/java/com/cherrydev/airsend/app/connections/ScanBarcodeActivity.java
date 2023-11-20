@@ -16,7 +16,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MyApplication;
-import com.cherrydev.airsendcore.utils.ObservableSubject;
+import io.github.romansj.utils.ObservableSubject;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
