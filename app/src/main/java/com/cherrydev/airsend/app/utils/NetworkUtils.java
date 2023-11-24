@@ -21,7 +21,7 @@ import javax.net.ssl.SSLParameters;
 
 public class NetworkUtils {
 
-
+    @Deprecated(since="Use AirSendCore library NetworkUtils")
     private static String getLocalIpAddress(boolean acceptLoopback) {
         try {
             for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
@@ -41,7 +41,7 @@ public class NetworkUtils {
         return "null";
     }
 
-
+    @Deprecated(since="Use AirSendCore library NetworkUtils")
     public static int getNetworkCount(boolean acceptLoopback) {
         int count = -1;
         try {
@@ -62,12 +62,12 @@ public class NetworkUtils {
         return count;
     }
 
-
+    @Deprecated(since="Use AirSendCore library NetworkUtils")
     public static String getIPAddress(boolean acceptLoopback) {
         return getLocalIpAddress(acceptLoopback);
     }
 
-
+    @Deprecated(since="Use AirSendCore library NetworkUtils")
     public static void printSupportedProtocols() {
         SSLParameters sslParameters;
         try {
@@ -93,7 +93,7 @@ public class NetworkUtils {
 
 
     // https://stackoverflow.com/questions/2675362/how-to-find-an-available-port
-    @Deprecated // to find available port, pass "0", which is more efficient, but you cannot request a specific range.
+    @Deprecated(since = "Use AirSendCore library NetworkUtils") // to find available port, pass "0", which is more efficient, but you cannot request a specific range.
     public static int nextFreePort(int from, int to) {
         int port = ThreadLocalRandom.current().nextInt(from, to);
         while (true) {
@@ -105,7 +105,7 @@ public class NetworkUtils {
         }
     }
 
-    @Deprecated
+    @Deprecated(since = "Use AirSendCore library NetworkUtils")
     private static boolean isLocalPortFree(int port) {
         try {
             new ServerSocket(port).close();
