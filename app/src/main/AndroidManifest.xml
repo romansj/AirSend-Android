@@ -42,7 +42,7 @@
         </activity>
 
 
-        <activity android:name=".app.connections.ScanBarcodeActivity" />
+        <activity android:name=".app.connections.qr.ScanBarcodeActivity" />
 
         <activity
             android:name=".app.utils.IntentActivity"

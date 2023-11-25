@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 
 import com.cherrydev.airsend.R;
+import com.cherrydev.airsend.app.connections.qr.ScanBarcodeActivity;
 import com.cherrydev.airsend.app.utils.InputValidators;
 import com.cherrydev.airsend.databinding.DialogMakeConnectionBinding;
 

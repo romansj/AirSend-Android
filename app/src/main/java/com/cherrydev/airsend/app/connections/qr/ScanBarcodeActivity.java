@@ -1,8 +1,8 @@
-package com.cherrydev.airsend.app.connections;
+package com.cherrydev.airsend.app.connections.qr;
 
-import static com.cherrydev.airsend.app.connections.CameraMessageType.START;
-import static com.cherrydev.airsend.app.connections.CameraMessageType.STOP;
-import static com.cherrydev.airsend.app.connections.ResultType.START_CAMERA;
+import static com.cherrydev.airsend.app.connections.qr.CameraMessageType.START;
+import static com.cherrydev.airsend.app.connections.qr.CameraMessageType.STOP;
+import static com.cherrydev.airsend.app.connections.qr.ResultType.START_CAMERA;
 import static com.cherrydev.airsend.app.utils.permission.PermissionUtils.cameraRequest;
 import static com.cherrydev.airsend.app.utils.permission.PermissionUtils.permissionGranted;
 
