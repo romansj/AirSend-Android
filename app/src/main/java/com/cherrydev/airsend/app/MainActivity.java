@@ -36,6 +36,7 @@ import java.util.stream.Collectors;
 
 import io.github.romansj.core.client.ClientManager;
 import io.github.romansj.core.ssl.SSLUtils;
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private NavUtils navUtils;
 
 
-    @SuppressLint("NonConstantResourceId")
+    @SuppressLint({"NonConstantResourceId", "CheckResult"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.AppTheme);
@@ -97,7 +98,10 @@ public class MainActivity extends AppCompatActivity {
 
         binding.btnRestart.setOnClickListener(v -> AppUtils.restartApp());
         binding.btnKill.setOnClickListener(v -> AppUtils.killApp());
-        binding.btnNukeDb.setOnClickListener(v -> databaseManager.nukeAll().runInBackground().run());
+        binding.btnNukeDb.setOnClickListener(v -> {
+            databaseManager.nukeAll().runInBackground().run();
+            AppUtils.restartApp();
+        });
 
 
         ServerService.startService();

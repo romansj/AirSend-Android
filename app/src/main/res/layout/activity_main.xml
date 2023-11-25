@@ -16,27 +16,25 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_restart"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Button.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="@string/restart_app"
             app:icon="@drawable/reset" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_kill"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/btn_nuke_db"
+            style="@style/Button.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="@string/kill_app"
-            app:icon="@drawable/knife" />
+            app:icon="@drawable/database_off" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_nuke_db"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:id="@+id/btn_kill"
+            style="@style/Button.IconOnly"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="Nuke DB"
-            app:icon="@drawable/nuke" />
+            app:icon="@drawable/exit_app" />
+
     </LinearLayout>
 
 
