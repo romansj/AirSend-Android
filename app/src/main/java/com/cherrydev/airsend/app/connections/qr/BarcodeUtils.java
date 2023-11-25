@@ -1,4 +1,4 @@
-package com.cherrydev.airsend.app.utils;
+package com.cherrydev.airsend.app.connections.qr;
 
 import android.graphics.Bitmap;
 

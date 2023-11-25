@@ -13,7 +13,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.connections.qr.ScanBarcodeActivity;
-import com.cherrydev.airsend.app.utils.InputValidators;
 import com.cherrydev.airsend.databinding.DialogMakeConnectionBinding;
 
 import timber.log.Timber;
@@ -61,7 +60,7 @@ public class DialogMakeConnection extends DialogFragment {
 
     private void validateInputAndClose(String IPText, String portText, String pskText) {
 
-        if (!InputValidators.validateConnectionParams(IPText, portText, pskText)) {
+        if (!InputValidator.validateConnectionParams(IPText, portText, pskText)) {
             Toast.makeText(requireContext(), getString(R.string.please_fill_in_all_required_fields), Toast.LENGTH_LONG).show();
             return;
         }

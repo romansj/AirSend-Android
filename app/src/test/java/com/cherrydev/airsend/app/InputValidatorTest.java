@@ -2,7 +2,7 @@ package com.cherrydev.airsend.app;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.cherrydev.airsend.app.utils.InputValidators;
+import com.cherrydev.airsend.app.connections.InputValidator;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-class InputValidatorsTest {
+class InputValidatorTest {
 
     public static Stream<Arguments> provideIPs() {
         return Stream.of(
@@ -42,7 +42,7 @@ class InputValidatorsTest {
     @ParameterizedTest
     @MethodSource("provideIPs")
     void validateIP(String IPText, boolean isValid) {
-        var validationResult = InputValidators.validateIP(IPText);
+        var validationResult = InputValidator.validateIP(IPText);
         assertEquals(isValid, validationResult);
     }
 
@@ -50,7 +50,7 @@ class InputValidatorsTest {
     @ParameterizedTest
     @MethodSource("providePorts")
     void validatePort(String portText, boolean isValid) {
-        var validationResult = InputValidators.validatePort(portText);
+        var validationResult = InputValidator.validatePort(portText);
         assertEquals(isValid, validationResult);
     }
 }

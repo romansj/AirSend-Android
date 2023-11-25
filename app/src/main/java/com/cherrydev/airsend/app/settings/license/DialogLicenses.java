@@ -1,4 +1,4 @@
-package com.cherrydev.airsend.app.settings;
+package com.cherrydev.airsend.app.settings.license;
 
 import android.app.Dialog;
 import android.os.Bundle;

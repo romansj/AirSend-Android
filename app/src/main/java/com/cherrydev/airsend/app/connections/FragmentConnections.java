@@ -27,7 +27,7 @@ import com.cherrydev.airsend.app.AppViewModel;
 import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.service.ServerService;
-import com.cherrydev.airsend.app.utils.BarcodeUtils;
+import com.cherrydev.airsend.app.connections.qr.BarcodeUtils;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.app.utils.PskUtils;

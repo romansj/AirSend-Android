@@ -6,14 +6,10 @@ import android.net.Network;
 
 public class NetworkUtils {
 
-
     public static boolean isConnectedToNetwork(Context context) {
         ConnectivityManager connectivityManager = context.getSystemService(ConnectivityManager.class);
         Network currentNetwork = connectivityManager.getActiveNetwork();
-        //not connected
-        if (currentNetwork != null) return true;
-        return false;
+        return currentNetwork != null;
     }
-
 
 }

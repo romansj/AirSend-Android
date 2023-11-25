@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MyApplication;
+import com.cherrydev.airsend.app.settings.license.DialogLicenses;
 import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.app.utils.mymodels.EditTextDebounce;
 import com.cherrydev.airsend.databinding.FragmentSettingsBinding;

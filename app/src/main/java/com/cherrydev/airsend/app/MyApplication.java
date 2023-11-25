@@ -51,9 +51,9 @@ public class MyApplication extends Application {
         super.onCreate();
         INSTANCE = this;
 
-        //to enable TLSv1.3
-        Security.insertProviderAt(new BouncyCastleProvider(), 1);
-        Security.insertProviderAt(Conscrypt.newProvider(), 2);
+
+        Security.insertProviderAt(new BouncyCastleProvider(), 1); // enable BC security implementation
+        Security.insertProviderAt(Conscrypt.newProvider(), 2); // enable TLSv1.3
         System.setProperty("javax.net.debug", "ssl");
 
 
