@@ -28,6 +28,7 @@ import com.cherrydev.airsend.app.database.models.UserMessage;
 import com.cherrydev.airsend.app.service.notification.NotificationUtils;
 import com.cherrydev.airsend.app.utils.IntentActivity;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
+import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.app.utils.ServiceUtils;
 import io.github.romansj.core.ClientMessage;
 import io.github.romansj.core.MessageType;
@@ -37,6 +38,9 @@ import io.github.romansj.core.server.ServerManager;
 import io.github.romansj.core.server.ServerMessage;
 import io.github.romansj.core.server.ServerOperation;
 import com.cherrydev.common.ClipboardUtils;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.text.RandomStringGenerator;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -149,11 +153,17 @@ public class ServerService extends Service {
         int savedPort = sharedPref.getInt(getString(R.string.last_used_port), 0);
         savedPort = Math.max(savedPort, 0);
 
+        String savedPsk = sharedPref.getString(getString(R.string.last_used_psk), PskUtils.getRandomPsk());
+        // todo duplicate; wrong location to save prefs
+        sharedPref.edit()
+                .putString(getString(R.string.last_used_psk), savedPsk)
+                .commit();
+
         //todo shouldnt this be done in server ssl?
         ServerManager serverManager = ServerManager.getInstance();
         try {
             // serverManager.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
-            serverManager.setSSLServerSocketFactory(SSLUtils.getSSLServerSocketFactory("hint", "pass123"));
+            serverManager.setSSLServerSocketFactory(SSLUtils.getSSLServerSocketFactory("hint", savedPsk));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

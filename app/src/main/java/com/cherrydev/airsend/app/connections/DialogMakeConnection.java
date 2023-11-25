@@ -44,8 +44,9 @@ public class DialogMakeConnection extends DialogFragment {
         binding.btnConnect.setOnClickListener(v -> {
             var IPText = binding.inputLayoutIp.getEditText().getText().toString();
             var portText = binding.inputLayoutPort.getEditText().getText().toString();
+            var pskText = binding.inputLayoutPsk.getEditText().getText().toString();
 
-            validateInputAndClose(IPText, portText);
+            validateInputAndClose(IPText, portText, pskText);
         });
         binding.btnClose.setOnClickListener(v -> dismiss());
 
@@ -57,20 +58,19 @@ public class DialogMakeConnection extends DialogFragment {
         return dialog;
     }
 
-    private void validateInputAndClose(String IPText, String portText) {
-        String IP;
-        int port;
+    private void validateInputAndClose(String IPText, String portText, String pskText) {
 
-        if (!InputValidators.validateIP(IPText) || !InputValidators.validatePort(portText)) {
+        if (!InputValidators.validateConnectionParams(IPText, portText, pskText)) {
             Toast.makeText(requireContext(), getString(R.string.please_fill_in_all_required_fields), Toast.LENGTH_LONG).show();
             return;
-
-        } else {
-            IP = IPText.trim();
-            port = Integer.parseInt(portText);
         }
 
-        if (listener != null) listener.onDialogClosed(IP, port);
+        String IP = IPText.trim();
+        int port = Integer.parseInt(portText);
+        String psk = pskText.trim();
+
+
+        if (listener != null) listener.onDialogClosed(IP, port, psk);
         dismiss();
     }
 
@@ -88,16 +88,17 @@ public class DialogMakeConnection extends DialogFragment {
 
         String[] split = result.split(",");
 
-        if (split.length < 2) {
+        if (split.length < 3) {
             Toast.makeText(requireContext(), getString(R.string.incorrect_qr_format), Toast.LENGTH_LONG).show();
             return;
         }
 
         String ip = split[0].trim();
         String port = split[1].trim();
+        String psk = split[2].trim();
 
 
-        validateInputAndClose(ip, port);
+        validateInputAndClose(ip, port, psk);
     }
 
     private void setListener(DialogMakeConnectionListener listener) {
@@ -105,6 +106,6 @@ public class DialogMakeConnection extends DialogFragment {
     }
 
     public interface DialogMakeConnectionListener {
-        void onDialogClosed(String IP, int port);
+        void onDialogClosed(String IP, int port, String psk);
     }
 }

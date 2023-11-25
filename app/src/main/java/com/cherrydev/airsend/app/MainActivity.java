@@ -5,6 +5,7 @@ import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
@@ -26,6 +27,7 @@ import com.cherrydev.airsend.app.service.ServerService;
 import com.cherrydev.airsend.app.utils.AppUtils;
 import com.cherrydev.airsend.app.utils.IntentAction;
 import com.cherrydev.airsend.app.utils.NavUtils;
+import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.databinding.ActivityMainBinding;
 import io.github.romansj.core.client.ClientManager;
 import com.cherrydev.common.MimeTypes;
@@ -108,15 +110,18 @@ public class MainActivity extends AppCompatActivity {
         ServerService.startService();
 
         // called here to set the ClientHandler before any other invocation
-        ClientManager instance = ClientManager.getInstance();
-        try {
-            // instance.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
-            instance.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", "pass123"));
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        instance.setMessageHandler(new SentMessageHandlerImpl());
-        instance.setClientHandler(new ClientHandlerImpl());
+        SharedPreferences sharedPreferences = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String settingPsk = sharedPreferences.getString(getString(R.string.last_used_psk), PskUtils.getRandomPsk());
+        ClientManager clientManager = ClientManager.getInstance();
+        clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", settingPsk));
+        // try {
+        //     // instance.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        //     clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", "pass123"));
+        // } catch (Exception e) {
+        //     throw new RuntimeException(e);
+        // }
+        clientManager.setMessageHandler(new SentMessageHandlerImpl());
+        clientManager.setClientHandler(new ClientHandlerImpl());
 
         Intent intent = getIntent();
         handleIntent(intent, savedInstanceState);
@@ -125,7 +130,7 @@ public class MainActivity extends AppCompatActivity {
         initNetworkListener();
 
 
-        var preferences = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        var preferences = sharedPreferences;
         boolean isChecked = preferences.getBoolean(getString(R.string.setting_debug_options), false);
         binding.linearDebug.setVisibility(isChecked ? View.VISIBLE : View.GONE);
     }

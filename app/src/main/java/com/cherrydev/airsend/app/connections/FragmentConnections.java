@@ -2,8 +2,13 @@ package com.cherrydev.airsend.app.connections;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 
+import static java.text.MessageFormat.*;
+
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,17 +27,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.AppViewModel;
+import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.service.ServerService;
 import com.cherrydev.airsend.app.utils.BarcodeUtils;
 import com.cherrydev.airsend.app.utils.ClipboardUtils;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
+import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.databinding.FragmentConnectionsBinding;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -116,14 +124,16 @@ public class FragmentConnections extends Fragment {
         binding.fabConnect.setOnClickListener(v -> {
             if (isNotConnected()) return;
 
-            DialogMakeConnection.DialogMakeConnectionListener listener = (IP, port) -> connectToClient(IP, port);
+            DialogMakeConnection.DialogMakeConnectionListener listener = (IP, port, psk) -> connectToClient(IP, port, psk);
             DialogMakeConnection.newInstance(listener).show(getParentFragmentManager(), null);
         });
     }
 
-    private void connectToClient(String IP, int port) {
-        ClientManager client = ClientManager.getInstance();
-        client.connect(IP, port);
+    private void connectToClient(String IP, int port, String psk) {
+        ClientManager clientManager = ClientManager.getInstance();
+        clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", psk));
+
+        clientManager.connect(IP, port);
 
         Toast.makeText(requireActivity(), requireContext().getString(R.string.message_sent), Toast.LENGTH_LONG).show();
     }
@@ -131,23 +141,7 @@ public class FragmentConnections extends Fragment {
 
     private void handleDeviceClick(Device connectionItem, AdapterDevice.ClickItem clickItem) {
         String itemIP = connectionItem.getIP();
-        int itemPort = connectionItem.getPort();
-
-
-        DialogRecyclerViewAction.DialogButtonListener<DeviceActionWrapper> listener = item -> {
-            switch (item.getDeviceAction()) {
-                case CONNECT:
-                    if (isNotConnected()) break;
-                    ClientManager.getInstance().connect(itemIP, itemPort);
-                    break;
-                case DISCONNECT:
-                    ClientManager.getInstance().disconnect(itemIP, itemPort);
-                    break;
-                case DELETE:
-                    ClientManager.getInstance().deleteClient(itemIP, itemPort);
-                    break;
-            }
-        };
+        DialogRecyclerViewAction.DialogButtonListener<DeviceActionWrapper> listener = getDeviceActionWrapperDialogButtonListener(connectionItem, itemIP);
 
 
         switch (clickItem) {
@@ -168,6 +162,28 @@ public class FragmentConnections extends Fragment {
                 break;
             }
         }
+    }
+
+    @NonNull
+    private DialogRecyclerViewAction.DialogButtonListener<DeviceActionWrapper> getDeviceActionWrapperDialogButtonListener(Device connectionItem, String itemIP) {
+        int itemPort = connectionItem.getPort();
+
+
+        DialogRecyclerViewAction.DialogButtonListener<DeviceActionWrapper> listener = item -> {
+            switch (item.getDeviceAction()) {
+                case CONNECT:
+                    if (isNotConnected()) break;
+                    ClientManager.getInstance().connect(itemIP, itemPort);
+                    break;
+                case DISCONNECT:
+                    ClientManager.getInstance().disconnect(itemIP, itemPort);
+                    break;
+                case DELETE:
+                    ClientManager.getInstance().deleteClient(itemIP, itemPort);
+                    break;
+            }
+        };
+        return listener;
     }
 
     private void initBottomSheetDeviceInfo() {
@@ -200,6 +216,7 @@ public class FragmentConnections extends Fragment {
     }
 
 
+    @SuppressLint("CheckResult")
     private void showDeviceData() {
         ImageView myImage = binding.imageViewQr;
 
@@ -207,14 +224,24 @@ public class FragmentConnections extends Fragment {
         var ip = CoreNetworkUtils.getIPAddress(false);
         TextView ipTV = binding.ipTv;
 
+        SharedPreferences sharedPref = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
+        String settingPsk = sharedPref.getString(getString(R.string.last_used_psk), PskUtils.getRandomPsk());
+
         if (ServerService.getPORT() == 0 || ip.equals("null")) {
             ipTV.setText(getString(R.string.server_is_not_started));
             BarcodeUtils.getBitmap(getString(R.string.server_is_not_started)).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> myImage.setImageBitmap(bitmap));
 
         } else {
             ipTV.setText(ip + " | PORT: " + ServerService.getPORT());
-            BarcodeUtils.getBitmap(ip + "," + ServerService.getPORT()).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> myImage.setImageBitmap(bitmap));
+            BarcodeUtils.getBitmap(String.format("%s,%s,%s", ip, ServerService.getPORT(), settingPsk)).observeOn(AndroidSchedulers.mainThread()).subscribe(bitmap -> myImage.setImageBitmap(bitmap));
         }
+
+
+        binding.pskTv.setText(settingPsk);
+        // todo duplicate; wrong location to save prefs
+        sharedPref.edit()
+                .putString(getString(R.string.last_used_psk), settingPsk)
+                .commit();
     }
 
 

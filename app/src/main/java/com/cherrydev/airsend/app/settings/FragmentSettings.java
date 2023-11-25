@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MyApplication;
+import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.app.utils.mymodels.EditTextDebounce;
 import com.cherrydev.airsend.databinding.FragmentSettingsBinding;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -105,6 +106,17 @@ public class FragmentSettings extends Fragment {
             sharedPref.edit()
                     .putString(getString(R.string.setting_device_name), result.trim().isEmpty() ? Build.MODEL : result.trim())
                     .apply();
+        }, 200);
+
+
+        String settingPsk = sharedPref.getString(getString(R.string.last_used_psk), PskUtils.getRandomPsk());
+        EditText editTextPsk = binding.textInputPsk.getEditText();
+        editTextPsk.setText(settingPsk);
+
+        EditTextDebounce.create(editTextPsk).watch(result -> {
+            sharedPref.edit()
+                    .putString(getString(R.string.last_used_psk), result)
+                    .commit();
         }, 200);
 
 

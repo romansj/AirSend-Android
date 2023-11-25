@@ -23,7 +23,9 @@ dependencies {
     //  usecase for "api" instead of "implementation"?
     //  or reason not to use lombok in libraries?
     implementation("org.slf4j:slf4j-api:2.0.9")
-    implementation("ch.qos.logback:logback-core:1.4.11")
+    // implementation("ch.qos.logback:logback-classic:1.4.11")
+    implementation 'com.github.tony19:logback-android:3.0.0'
+
 
     // region shared libraries
     implementation libs.common
@@ -35,6 +37,7 @@ dependencies {
 
     implementation(libs.guava)
     implementation(libs.commons.lang3)
+    implementation(libs.commons.text)
 
 
     implementation libs.constraintlayout

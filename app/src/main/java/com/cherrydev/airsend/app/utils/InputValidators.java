@@ -44,4 +44,12 @@ public class InputValidators {
 
         return isIP;
     }
+
+    public static boolean validateConnectionParams(String ipText, String portText, String pskText) {
+        return !validateIP(ipText) || !validatePort(portText) || validatePsk(pskText);
+    }
+
+    private static boolean validatePsk(String pskText) {
+        return !pskText.trim().isEmpty();
+    }
 }

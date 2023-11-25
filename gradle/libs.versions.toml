@@ -1,4 +1,5 @@
 [versions]
+commonsTextVersion = "1.11.0"
 commonToolsVersion = "0.0.3"
 coreJavaVersion = "3.0.0"
 
@@ -46,6 +47,7 @@ uiautomatorVersion = "2.2.0"
 
 [libraries]
 common = { module = "io.github.romansj.tools:common", version.ref = "commonToolsVersion" }
+commons-text = { module = "org.apache.commons:commons-text", version.ref = "commonsTextVersion" }
 dialogs = { module = "io.github.romansj.tools:dialogs", version.ref = "commonToolsVersion" }
 keyboard = { module = "io.github.romansj.tools:keyboard", version.ref = "commonToolsVersion" }
 file = { module = "io.github.romansj.tools:file", version.ref = "commonToolsVersion" }

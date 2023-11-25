@@ -87,6 +87,23 @@
                 tools:text="65535" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_psk"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            app:hintEnabled="false">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_psk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/port"
+                android:maxHeight="100dp"
+                android:scrollbars="vertical"
+                tools:text="abc123" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
     </LinearLayout>
 

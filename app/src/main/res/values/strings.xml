@@ -26,6 +26,7 @@
     <string name="made_by_cherrydev">Made by CherryDev</string>
     <string name="licenses">Licenses</string>
     <string name="last_used_port">last_used_port</string>
+    <string name="last_used_psk">last_used_psk</string>
     <string name="preference_file_key">com.cherrydev.airsend.prefs</string>
     <string name="close">Close</string>
     <string name="kill_app">Kill</string>

@@ -17,6 +17,7 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
 
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.conscrypt.Conscrypt;
 
 import java.security.KeyManagementException;
@@ -51,7 +52,8 @@ public class MyApplication extends Application {
         INSTANCE = this;
 
         //to enable TLSv1.3
-        Security.insertProviderAt(Conscrypt.newProvider(), 1);
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
+        Security.insertProviderAt(Conscrypt.newProvider(), 2);
         System.setProperty("javax.net.debug", "ssl");
 
 
