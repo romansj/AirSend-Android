@@ -1,3 +1,6 @@
 package com.cherrydev.airsend.app.connections;
 
-public enum ResultType {TEXT, START}
+public enum ResultType {
+    TEXT_RECOGNIZED,
+    START_CAMERA
+}

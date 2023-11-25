@@ -19,13 +19,13 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdapterDevice extends RecyclerView.Adapter<AdapterDevice.ViewHolder> {
+public class RecylerViewAdapterDevice extends RecyclerView.Adapter<RecylerViewAdapterDevice.ViewHolder> {
 
     private OnClickListener onClickListener;
     private List<DeviceWrapper> items = new ArrayList<>();
 
 
-    public AdapterDevice(OnClickListener onClickListener) {
+    public RecylerViewAdapterDevice(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 
@@ -39,7 +39,7 @@ public class AdapterDevice extends RecyclerView.Adapter<AdapterDevice.ViewHolder
     //https://stackoverflow.com/a/29862608/4673960
     @SuppressLint("ClickableViewAccessibility")
     @Override
-    public void onBindViewHolder(@NonNull AdapterDevice.ViewHolder holder, int pos) {
+    public void onBindViewHolder(@NonNull RecylerViewAdapterDevice.ViewHolder holder, int pos) {
         DeviceWrapper item = getItem(pos);
 
 

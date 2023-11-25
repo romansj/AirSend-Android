@@ -6,10 +6,10 @@ public class CameraMessage {
 
     private String message;
     private boolean kill;
-    private Type type;
+    private CameraMessageType type;
     private SurfaceHolder holder;
 
-    public CameraMessage(Type start, SurfaceHolder holder) {
+    public CameraMessage(CameraMessageType start, SurfaceHolder holder) {
         this.type = start;
         this.holder = holder;
     }
@@ -22,15 +22,11 @@ public class CameraMessage {
         this.kill = kill;
     }
 
-    public enum Type {
-        START, PAUSE, STOP
-    }
-
-    public Type getType() {
+    public CameraMessageType getType() {
         return type;
     }
 
-    public CameraMessage(Type type) {
+    public CameraMessage(CameraMessageType type) {
         this.type = type;
     }
 

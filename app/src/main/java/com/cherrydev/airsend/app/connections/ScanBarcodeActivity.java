@@ -1,5 +1,11 @@
 package com.cherrydev.airsend.app.connections;
 
+import static com.cherrydev.airsend.app.connections.CameraMessageType.START;
+import static com.cherrydev.airsend.app.connections.CameraMessageType.STOP;
+import static com.cherrydev.airsend.app.connections.ResultType.START_CAMERA;
+import static com.cherrydev.airsend.app.utils.permission.PermissionUtils.cameraRequest;
+import static com.cherrydev.airsend.app.utils.permission.PermissionUtils.permissionGranted;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -16,14 +22,12 @@ import androidx.core.app.ActivityCompat;
 import com.cherrydev.airsend.R;
 
 import io.github.romansj.utils.ObservableSubject;
-
 import timber.log.Timber;
 
 public class ScanBarcodeActivity extends AppCompatActivity {
 
-    private static final int REQUEST_CAMERA_PERMISSION = 201;
+
     private ObservableSubject<CameraMessage> observableMessage = new ObservableSubject<>();
-    private String[] cameraStringArray = new String[]{Manifest.permission.CAMERA};
     private SurfaceView surfaceView;
 
 
@@ -34,29 +38,32 @@ public class ScanBarcodeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scan_barcode);
 
         initViews();
-
-        try {
-            if (ActivityCompat.checkSelfPermission(ScanBarcodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                observableMessage.setValue(new CameraMessage(CameraMessage.Type.START, surfaceView.getHolder()));
-            } else {
-                ActivityCompat.requestPermissions(ScanBarcodeActivity.this, cameraStringArray, REQUEST_CAMERA_PERMISSION);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        checkPermissions();
 
 
         var holder = surfaceView.getHolder();
         startCamera(holder);
     }
 
+    private void checkPermissions() {
+        try {
+            if (ActivityCompat.checkSelfPermission(ScanBarcodeActivity.this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                observableMessage.setValue(new CameraMessage(START, surfaceView.getHolder()));
+            } else {
+                ActivityCompat.requestPermissions(ScanBarcodeActivity.this, cameraRequest.getPermissions(), cameraRequest.getCode());
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (REQUEST_CAMERA_PERMISSION == requestCode && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            observableMessage.setValue(new CameraMessage(CameraMessage.Type.START, surfaceView.getHolder()));
+        if (cameraRequest.getCode() == requestCode && permissionGranted(grantResults)) {
+            observableMessage.setValue(new CameraMessage(START, surfaceView.getHolder()));
         }
     }
 
@@ -68,17 +75,17 @@ public class ScanBarcodeActivity extends AppCompatActivity {
         SurfaceHolder.Callback callback = new SurfaceHolder.Callback() {
 
             @Override
-            public void surfaceCreated(SurfaceHolder holder) {
+            public void surfaceCreated(@NonNull SurfaceHolder holder) {
             }
 
             @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+            public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
             }
 
             @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
+            public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
                 Timber.d("surfaceDestroyed");
-                observableMessage.setValue(new CameraMessage(CameraMessage.Type.STOP));
+                observableMessage.setValue(new CameraMessage(STOP));
             }
 
         };
@@ -91,25 +98,27 @@ public class ScanBarcodeActivity extends AppCompatActivity {
     }
 
     private void startCamera(SurfaceHolder holder) {
-        CameraThread cameraThread = new CameraThread(observableMessage.getObservable(), text -> runOnUiThread(() -> {
-            //Timber.d("camera callback text: " + text);
-            if (text.getResultType() == ResultType.START) {
-                holder.setFormat(PixelFormat.TRANSPARENT);
-
-            } else {
-                Intent intent = new Intent();
-                intent.putExtra("RESULT", text.getText());
-                setResult(Activity.RESULT_OK, intent);
-
-
-                observableMessage.setValue(new CameraMessage(CameraMessage.Type.STOP));
-
-                finish();
-            }
-        }));
-
+        CameraThread cameraThread = new CameraThread(observableMessage.getObservable(), cameraResult ->
+                runOnUiThread(() -> handleCameraResult(holder, cameraResult))
+        );
 
         cameraThread.start();
+    }
+
+    private void handleCameraResult(SurfaceHolder holder, CameraResult cameraResult) {
+        if (START_CAMERA == cameraResult.getResultType()) {
+            holder.setFormat(PixelFormat.TRANSPARENT);
+
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra("RESULT", cameraResult.getText());
+            setResult(Activity.RESULT_OK, intent);
+
+
+            observableMessage.setValue(new CameraMessage(STOP));
+
+            finish();
+        }
     }
 
 }

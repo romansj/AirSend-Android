@@ -11,7 +11,7 @@ public class CameraResult {
 
     public CameraResult(String text) {
         this.text = text;
-        this.resultType = ResultType.TEXT;
+        this.resultType = ResultType.TEXT_RECOGNIZED;
     }
 
     public String getText() {

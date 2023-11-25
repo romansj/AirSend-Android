@@ -2,13 +2,10 @@ package com.cherrydev.airsend.app.connections;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 
-import static java.text.MessageFormat.*;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +37,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,7 +52,7 @@ public class FragmentConnections extends Fragment {
 
     private AppViewModel viewModel;
     private FragmentConnectionsBinding binding;
-    private AdapterDevice adapter;
+    private RecylerViewAdapterDevice adapter;
     private BottomSheetBehavior bottomSheetBehavior;
 
 
@@ -83,8 +79,8 @@ public class FragmentConnections extends Fragment {
         initBottomSheetDeviceInfo();
 
 
-        AdapterDevice.OnClickListener clickListener = (device, clickItem) -> handleDeviceClick(device, clickItem);
-        adapter = new AdapterDevice(clickListener);
+        RecylerViewAdapterDevice.OnClickListener clickListener = (device, clickItem) -> handleDeviceClick(device, clickItem);
+        adapter = new RecylerViewAdapterDevice(clickListener);
         adapter.setHasStableIds(true);
         viewModel.getDevices().observe(getViewLifecycleOwner(), devices -> {
             List<DeviceWrapper> deviceWrapperList = new ArrayList<>();
@@ -139,7 +135,7 @@ public class FragmentConnections extends Fragment {
     }
 
 
-    private void handleDeviceClick(Device connectionItem, AdapterDevice.ClickItem clickItem) {
+    private void handleDeviceClick(Device connectionItem, RecylerViewAdapterDevice.ClickItem clickItem) {
         String itemIP = connectionItem.getIP();
         DialogRecyclerViewAction.DialogButtonListener<DeviceActionWrapper> listener = getDeviceActionWrapperDialogButtonListener(connectionItem, itemIP);
 
