@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.widget.Toast;
 
-import com.cherrydev.airsend.BuildConfig;
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
@@ -30,6 +29,12 @@ import com.cherrydev.airsend.app.utils.IntentActivity;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.app.utils.ServiceUtils;
+import com.cherrydev.clipboard.ClipboardUtils;
+
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import io.github.romansj.core.ClientMessage;
 import io.github.romansj.core.MessageType;
 import io.github.romansj.core.OwnerProperties;
@@ -37,21 +42,6 @@ import io.github.romansj.core.Status;
 import io.github.romansj.core.server.ServerManager;
 import io.github.romansj.core.server.ServerMessage;
 import io.github.romansj.core.server.ServerOperation;
-import com.cherrydev.common.ClipboardUtils;
-
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.text.RandomStringGenerator;
-
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import io.github.romansj.core.ssl.SSLUtils;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;

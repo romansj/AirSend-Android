@@ -12,12 +12,12 @@ import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.database.models.UserMessage;
 import com.cherrydev.airsend.app.utils.NavUtils;
-import io.github.romansj.core.MessageType;
 import com.cherrydev.time.CommonTimeUtils;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
+
+import io.github.romansj.core.MessageType;
 
 public class AppViewModel extends ViewModel {
     private MutableLiveData<String> textToSend = new MutableLiveData<>();
@@ -81,7 +81,7 @@ public class AppViewModel extends ViewModel {
     public LiveData<List<SentMessage>> getSentMessages() {
         // if (sentMessages == null) // todo 12.06.2022
         // sentMessages = databaseManager.getDb().getSentMessages(dateFrom, dateUntil, types);
-        sentMessages = databaseManager.getDb().getSentMessages(dateFrom,dateUntil, types);
+        sentMessages = databaseManager.getDb().getSentMessages(dateFrom, dateUntil, types);
         return sentMessages;
     }
 

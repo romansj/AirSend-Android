@@ -9,13 +9,6 @@ import android.content.Context;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.cherrydev.airsend.BuildConfig;
-import com.cherrydev.airsend.R;
-import com.cherrydev.airsend.app.MyApplication;
-import com.cherrydev.airsend.app.utils.NetworkUtils;
-import io.github.romansj.core.ClientMessage;
-import io.github.romansj.core.server.ServerManager;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,6 +20,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
+import io.github.romansj.core.ClientMessage;
+import io.github.romansj.core.server.ServerManager;
 import io.github.romansj.core.ssl.SSLUtils;
 import io.github.romansj.utils.CoreNetworkUtils;
 import io.reactivex.rxjava3.core.Observable;

@@ -19,7 +19,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.cherrydev.airsend.BuildConfig;
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
 import com.cherrydev.airsend.app.messages.SentMessageHandlerImpl;
@@ -29,19 +28,13 @@ import com.cherrydev.airsend.app.utils.IntentAction;
 import com.cherrydev.airsend.app.utils.NavUtils;
 import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.databinding.ActivityMainBinding;
-import io.github.romansj.core.client.ClientManager;
 import com.cherrydev.common.MimeTypes;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.io.IOException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 import java.util.stream.Collectors;
 
+import io.github.romansj.core.client.ClientManager;
 import io.github.romansj.core.ssl.SSLUtils;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;

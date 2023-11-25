@@ -4,12 +4,13 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.cherrydev.airsend.app.messages.IMessage;
-import io.github.romansj.core.ClientMessage;
-import io.github.romansj.core.MessageType;
-import io.github.romansj.core.SentStatus;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+
+import io.github.romansj.core.ClientMessage;
+import io.github.romansj.core.MessageType;
+import io.github.romansj.core.SentStatus;
 
 @Entity
 public class SentMessage implements IMessage {

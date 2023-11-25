@@ -4,12 +4,8 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.cherrydev.airsend.app.messages.IMessage;
-import io.github.romansj.core.MessageType;
-import com.cherrydev.time.CommonTimeUtils;
 
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import io.github.romansj.core.MessageType;
 
 @Entity
 public class UserMessage implements IMessage {

@@ -11,8 +11,6 @@ import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.DatabaseManager;
 import com.cherrydev.airsend.app.service.ServerService;
 import com.cherrydev.airsend.app.service.notification.NotificationUtils;
-import io.github.romansj.core.Constants;
-import io.github.romansj.core.OwnerProperties;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -26,6 +24,8 @@ import java.security.Security;
 
 import javax.net.ssl.SSLContext;
 
+import io.github.romansj.core.Constants;
+import io.github.romansj.core.OwnerProperties;
 import timber.log.Timber;
 
 public class MyApplication extends Application {

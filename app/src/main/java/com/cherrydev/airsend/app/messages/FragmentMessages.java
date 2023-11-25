@@ -33,8 +33,7 @@ import com.cherrydev.airsend.app.messages.recipient.DialogChooseRecipients;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.databinding.FragmentMessagesBinding;
-import io.github.romansj.core.client.ClientManager;
-import com.cherrydev.common.ClipboardUtils;
+import com.cherrydev.clipboard.ClipboardUtils;
 import com.cherrydev.dialogs.confirm.DialogConfirm;
 import com.cherrydev.dialogs.utils.WrapperDialogFragment;
 import com.cherrydev.keyboard.KeyboardUtils;
@@ -47,6 +46,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import io.github.romansj.core.client.ClientManager;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 

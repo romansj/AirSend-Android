@@ -15,7 +15,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MainActivity;
-import com.cherrydev.airsend.app.utils.ClipboardUtils;
+import com.cherrydev.clipboard.ClipboardUtils;
 import com.google.common.truth.Truth;
 
 import org.junit.Rule;

@@ -28,11 +28,11 @@ import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.service.ServerService;
 import com.cherrydev.airsend.app.utils.BarcodeUtils;
-import com.cherrydev.airsend.app.utils.ClipboardUtils;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.databinding.FragmentConnectionsBinding;
+import com.cherrydev.clipboard.ClipboardUtils;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import org.apache.commons.lang3.tuple.Pair;

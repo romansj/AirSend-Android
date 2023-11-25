@@ -13,7 +13,7 @@ import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MainActivity;
 import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.service.ServerService;
-import com.cherrydev.common.ClipboardUtils;
+import com.cherrydev.clipboard.ClipboardUtils;
 import com.cherrydev.common.MimeTypes;
 
 import timber.log.Timber;

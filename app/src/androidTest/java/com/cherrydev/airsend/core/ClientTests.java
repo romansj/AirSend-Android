@@ -13,11 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
-import com.cherrydev.airsend.BuildConfig;
-import com.cherrydev.airsend.R;
-import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
-import com.cherrydev.airsend.app.utils.NetworkUtils;
 
 import org.junit.BeforeClass;
 import org.junit.Test;

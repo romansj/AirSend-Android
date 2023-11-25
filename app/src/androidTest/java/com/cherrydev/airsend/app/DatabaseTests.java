@@ -17,7 +17,6 @@ import com.cherrydev.airsend.app.database.DatabaseManager;
 import com.cherrydev.airsend.app.database.DbDao;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.UserMessage;
-import io.github.romansj.core.MessageType;
 import com.cherrydev.time.CommonTimeUtils;
 
 import org.junit.After;
@@ -28,6 +27,8 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
+
+import io.github.romansj.core.MessageType;
 
 
 @RunWith(AndroidJUnit4.class)

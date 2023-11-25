@@ -23,15 +23,15 @@ import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.databinding.DialogSentMessagesBinding;
-import io.github.romansj.core.MessageType;
-import io.github.romansj.core.client.ClientManager;
-import com.cherrydev.common.ClipboardUtils;
+import com.cherrydev.clipboard.ClipboardUtils;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import io.github.romansj.core.MessageType;
+import io.github.romansj.core.client.ClientManager;
 import timber.log.Timber;
 
 
@@ -86,18 +86,14 @@ public class FragmentSentMessages extends Fragment {
         };
 
 
-
-
         var messageTypes = List.of(MessageType.MESSAGE, MessageType.CONNECT);
-        initFilter2(binding.dropdownMssgType.getEditText(), "Type",messageTypes.stream().map(Enum::name).collect(Collectors.toList()));
+        initFilter2(binding.dropdownMssgType.getEditText(), "Type", messageTypes.stream().map(Enum::name).collect(Collectors.toList()));
         var dateAdapter = initFilter2(binding.dropdownMssgDate.getEditText(), "Date");
         MyApplication.getDatabaseManager().getDb().getUniqueDates().observe(getViewLifecycleOwner(), dates -> {
             dateAdapter.clear();
             dateAdapter.addAll(dates);
         });
         setFilter(null, null, messageTypes);
-
-
 
 
         MessageAdapter<SentMessage> adapter = new MessageAdapter<>(clickListener);
@@ -114,7 +110,7 @@ public class FragmentSentMessages extends Fragment {
     }
 
     ArrayAdapter<String> initFilter2(EditText editText, String emptyText) {
-       return initFilter2(editText, emptyText, new ArrayList<>());
+        return initFilter2(editText, emptyText, new ArrayList<>());
     }
 
     ArrayAdapter<String> initFilter2(EditText editText, String emptyText, List<String> values) {
@@ -142,7 +138,6 @@ public class FragmentSentMessages extends Fragment {
 
         return adapter;
     }
-
 
 
     private void setFilter(LocalDateTime dateFrom, LocalDateTime dateUntil, List<MessageType> types) {

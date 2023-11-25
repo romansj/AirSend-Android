@@ -1,6 +1,6 @@
 [versions]
 commonsTextVersion = "1.11.0"
-commonToolsVersion = "0.0.3"
+commonToolsVersion = "1.0.0"
 coreJavaVersion = "3.0.0"
 
 commonsLang3Version = "3.13.0"
@@ -8,6 +8,8 @@ guavaVersion = "31.0.1-android"
 
 desugar_jdk_libsVersion = "2.0.4"
 
+logbackAndroidVersion = "3.0.0"
+slf4jApiVersion = "2.0.9"
 
 
 dexmakerMockitoVersion = "2.25.0"
@@ -47,7 +49,7 @@ uiautomatorVersion = "2.2.0"
 
 [libraries]
 common = { module = "io.github.romansj.tools:common", version.ref = "commonToolsVersion" }
-commons-text = { module = "org.apache.commons:commons-text", version.ref = "commonsTextVersion" }
+clipboard = { module = "io.github.romansj.tools:clipboard", version.ref = "commonToolsVersion" }
 dialogs = { module = "io.github.romansj.tools:dialogs", version.ref = "commonToolsVersion" }
 keyboard = { module = "io.github.romansj.tools:keyboard", version.ref = "commonToolsVersion" }
 file = { module = "io.github.romansj.tools:file", version.ref = "commonToolsVersion" }
@@ -55,6 +57,7 @@ time = { module = "io.github.romansj.tools:time", version.ref = "commonToolsVers
 
 airsend-core-java = { module = "io.github.romansj.airsend:core-java", version.ref = "coreJavaVersion" }
 
+commons-text = { module = "org.apache.commons:commons-text", version.ref = "commonsTextVersion" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3Version" }
 guava = { module = "com.google.guava:guava", version.ref = "guavaVersion" }
 
@@ -112,6 +115,8 @@ androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecyc
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "roomRuntime" }
 
+logback-android = { module = "com.github.tony19:logback-android", version.ref = "logbackAndroidVersion" }
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApiVersion" }
 
 [bundles]
 espresso = [

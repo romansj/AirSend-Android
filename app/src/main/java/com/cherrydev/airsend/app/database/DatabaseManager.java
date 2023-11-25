@@ -7,10 +7,11 @@ import androidx.room.Room;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.database.models.UserMessage;
-import io.github.romansj.core.SentStatus;
-import io.github.romansj.core.Status;
 
 import java.util.List;
+
+import io.github.romansj.core.SentStatus;
+import io.github.romansj.core.Status;
 
 public class DatabaseManager {
     private static AppDatabase DB;
