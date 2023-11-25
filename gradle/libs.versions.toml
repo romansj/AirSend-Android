@@ -1,6 +1,6 @@
 [versions]
 commonToolsVersion = "0.0.3"
-coreJavaVersion = "2.0.1"
+coreJavaVersion = "3.0.0"
 
 commonsLang3Version = "3.13.0"
 guavaVersion = "31.0.1-android"

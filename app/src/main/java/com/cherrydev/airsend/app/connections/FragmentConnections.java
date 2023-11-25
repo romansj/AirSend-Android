@@ -38,6 +38,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.romansj.core.client.ClientManager;
+import io.github.romansj.core.ssl.SSLUtils;
+import io.github.romansj.utils.CoreNetworkUtils;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -201,8 +203,8 @@ public class FragmentConnections extends Fragment {
     private void showDeviceData() {
         ImageView myImage = binding.imageViewQr;
 
-        NetworkUtils.printSupportedProtocols();
-        var ip = NetworkUtils.getIPAddress(false);
+        SSLUtils.printSupportedProtocols();
+        var ip = CoreNetworkUtils.getIPAddress(false);
         TextView ipTV = binding.ipTv;
 
         if (ServerService.getPORT() == 0 || ip.equals("null")) {

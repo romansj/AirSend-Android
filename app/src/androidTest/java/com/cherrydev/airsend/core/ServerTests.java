@@ -15,12 +15,20 @@ import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import io.github.romansj.core.ClientMessage;
 import io.github.romansj.core.server.ServerManager;
-import io.github.romansj.utils.SSLUtils;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+
+import io.github.romansj.core.ssl.SSLUtils;
+import io.github.romansj.utils.CoreNetworkUtils;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -42,8 +50,8 @@ public class ServerTests {
         RxJavaPlugins.setIoSchedulerHandler(__ -> Schedulers.trampoline());
 
 
-        port = NetworkUtils.nextFreePort(30000, 50000);
-        ip = NetworkUtils.getIPAddress(true);
+        port = CoreNetworkUtils.nextFreePort(30000, 50000);
+        ip = CoreNetworkUtils.getIPAddress(true);
     }
 
     // if we don't pass here, then test did not instantiate correctly
@@ -57,7 +65,7 @@ public class ServerTests {
 
 
     @Test
-    public void runningServerDoesNotRunTwice() {
+    public void runningServerDoesNotRunTwice() throws UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException, KeyManagementException {
         ServerManager serverManager = getServerManager();
 
         Observable<ClientMessage> messageObservableStart = serverManager.startServer(port);
@@ -68,7 +76,7 @@ public class ServerTests {
     }
 
     @Test
-    public void restartedServerReturnsNewObservable() {
+    public void restartedServerReturnsNewObservable() throws UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException, KeyManagementException {
         ServerManager serverManager = getServerManager();
 
         Observable<ClientMessage> messageObservableStart = serverManager.startServer(port);
@@ -79,9 +87,10 @@ public class ServerTests {
         assertThat(messageObservableStartAgain).isNotSameInstanceAs(messageObservableStart);
     }
 
-    private ServerManager getServerManager() {
+    private ServerManager getServerManager() throws UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException, KeyManagementException {
         ServerManager serverManager = ServerManager.getInstance();
-        serverManager.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        // serverManager.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        serverManager.setSSLServerSocketFactory(SSLUtils.getSSLServerSocketFactory("test", "test123"));
         return serverManager;
     }
 

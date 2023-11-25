@@ -70,7 +70,7 @@ public class MyApplication extends Application {
         try {
             ProviderInstaller.installIfNeeded(getApplicationContext());
             SSLContext sslContext;
-            sslContext = SSLContext.getInstance(Constants.protocol);
+            sslContext = SSLContext.getInstance(Constants.TLS_1_2);
             sslContext.init(null, null, null);
             sslContext.createSSLEngine();
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException | NoSuchAlgorithmException | KeyManagementException e) {

@@ -28,13 +28,19 @@ import com.cherrydev.airsend.app.utils.IntentAction;
 import com.cherrydev.airsend.app.utils.NavUtils;
 import com.cherrydev.airsend.databinding.ActivityMainBinding;
 import io.github.romansj.core.client.ClientManager;
-import io.github.romansj.utils.SSLUtils;
 import com.cherrydev.common.MimeTypes;
 
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.stream.Collectors;
 
+import io.github.romansj.core.ssl.SSLUtils;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -103,7 +109,12 @@ public class MainActivity extends AppCompatActivity {
 
         // called here to set the ClientHandler before any other invocation
         ClientManager instance = ClientManager.getInstance();
-        instance.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        try {
+            // instance.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+            instance.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", "pass123"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         instance.setMessageHandler(new SentMessageHandlerImpl());
         instance.setClientHandler(new ClientHandlerImpl());
 

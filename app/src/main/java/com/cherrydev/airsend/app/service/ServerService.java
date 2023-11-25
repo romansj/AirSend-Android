@@ -36,13 +36,19 @@ import io.github.romansj.core.Status;
 import io.github.romansj.core.server.ServerManager;
 import io.github.romansj.core.server.ServerMessage;
 import io.github.romansj.core.server.ServerOperation;
-import io.github.romansj.utils.SSLUtils;
 import com.cherrydev.common.ClipboardUtils;
 
+import java.io.IOException;
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import io.github.romansj.core.ssl.SSLUtils;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
@@ -145,7 +151,12 @@ public class ServerService extends Service {
 
         //todo shouldnt this be done in server ssl?
         ServerManager serverManager = ServerManager.getInstance();
-        serverManager.setSslContext(SSLUtils.createSSLContext(MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+        try {
+            // serverManager.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
+            serverManager.setSSLServerSocketFactory(SSLUtils.getSSLServerSocketFactory("hint", "pass123"));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         var ownerProperties = MyApplication.getOwnerProperties(this);
         serverManager.setOwnerProperties(ownerProperties);
 
