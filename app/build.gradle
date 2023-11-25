@@ -23,7 +23,6 @@ dependencies {
     //  usecase for "api" instead of "implementation"?
     //  or reason not to use lombok in libraries?
     implementation(libs.slf4j.api)
-    // implementation("ch.qos.logback:logback-classic:1.4.11")
     implementation libs.logback.android
 
 
