@@ -1,11 +1,11 @@
 package com.cherrydev.airsend.app;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.setting_debug_options;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
@@ -23,10 +23,10 @@ import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
 import com.cherrydev.airsend.app.messages.SentMessageHandlerImpl;
 import com.cherrydev.airsend.app.service.ServerService;
+import com.cherrydev.airsend.app.settings.PreferenceUtils;
 import com.cherrydev.airsend.app.utils.AppUtils;
 import com.cherrydev.airsend.app.utils.IntentAction;
 import com.cherrydev.airsend.app.utils.NavUtils;
-import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.databinding.ActivityMainBinding;
 import com.cherrydev.common.MimeTypes;
 
@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 
 import io.github.romansj.core.client.ClientManager;
 import io.github.romansj.core.ssl.SSLUtils;
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -107,8 +106,7 @@ public class MainActivity extends AppCompatActivity {
         ServerService.startService();
 
         // called here to set the ClientHandler before any other invocation
-        SharedPreferences sharedPreferences = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String settingPsk = sharedPreferences.getString(getString(R.string.last_used_psk), PskUtils.getRandomPsk());
+        String settingPsk = PreferenceUtils.getString(LAST_USED_PSK);
         ClientManager clientManager = ClientManager.getInstance();
         clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", settingPsk));
         // try {
@@ -127,8 +125,7 @@ public class MainActivity extends AppCompatActivity {
         initNetworkListener();
 
 
-        var preferences = sharedPreferences;
-        boolean isChecked = preferences.getBoolean(getString(R.string.setting_debug_options), false);
+        boolean isChecked = PreferenceUtils.getBoolean(setting_debug_options);
         binding.linearDebug.setVisibility(isChecked ? View.VISIBLE : View.GONE);
     }
 
@@ -140,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
             public void onAvailable(Network network) {
                 Timber.d("ClientSSL " + "The default network is now: " + network);
 
-                var ownerProperties = MyApplication.getOwnerProperties(MainActivity.this);
+                var ownerProperties = MyApplication.getOwnerProperties();
                 ClientManager.getInstance().setOwnerProperties(ownerProperties);
 
                 databaseManager.getDb().getAllDevices().subscribeOn(Schedulers.io()).subscribe(devices -> {

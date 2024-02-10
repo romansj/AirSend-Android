@@ -1,10 +1,10 @@
 package com.cherrydev.airsend.app.connections;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.DEVICE_NAME;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,13 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.AppViewModel;
-import com.cherrydev.airsend.app.MyApplication;
+import com.cherrydev.airsend.app.connections.qr.BarcodeUtils;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.service.ServerService;
-import com.cherrydev.airsend.app.connections.qr.BarcodeUtils;
+import com.cherrydev.airsend.app.settings.PreferenceUtils;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
-import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.databinding.FragmentConnectionsBinding;
 import com.cherrydev.clipboard.ClipboardUtils;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
@@ -68,6 +67,7 @@ public class FragmentConnections extends Fragment {
     }
 
 
+    @SuppressLint("CheckResult")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -92,8 +92,8 @@ public class FragmentConnections extends Fragment {
 
             adapter.updateData(deviceWrapperList);
 
-            binding.tvEmptyRv.setVisibility(devices.size() == 0 ? View.VISIBLE : View.GONE);
-            binding.recyclerView.setVisibility(devices.size() != 0 ? View.VISIBLE : View.GONE);
+            binding.tvEmptyRv.setVisibility(devices.isEmpty() ? View.VISIBLE : View.GONE);
+            binding.recyclerView.setVisibility(!devices.isEmpty() ? View.VISIBLE : View.GONE);
         });
 
 
@@ -120,18 +120,32 @@ public class FragmentConnections extends Fragment {
         binding.fabConnect.setOnClickListener(v -> {
             if (isNotConnected()) return;
 
-            DialogMakeConnection.DialogMakeConnectionListener listener = (IP, port, psk) -> connectToClient(IP, port, psk);
+            DialogMakeConnection.DialogMakeConnectionListener listener = (IP, port, psk) -> {
+                connectToDevice(IP, port, psk);
+                PreferenceUtils.updatePreference(LAST_USED_PSK, psk);
+            };
             DialogMakeConnection.newInstance(listener).show(getParentFragmentManager(), null);
+
         });
     }
 
-    private void connectToClient(String IP, int port, String psk) {
+    /**
+     * Equalise PSKs and connect to device. Equalise - remote device PSK = our PSK
+     *
+     * @param IP   device IP address
+     * @param port device port
+     * @param psk  device psk
+     */
+    private void connectToDevice(String IP, int port, String psk) {
         ClientManager clientManager = ClientManager.getInstance();
-        clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", psk));
-
+        clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory(getDeviceName(), psk));
         clientManager.connect(IP, port);
 
         Toast.makeText(requireActivity(), requireContext().getString(R.string.message_sent), Toast.LENGTH_LONG).show();
+    }
+
+    private String getDeviceName() {
+        return PreferenceUtils.getString(DEVICE_NAME);
     }
 
 
@@ -220,8 +234,7 @@ public class FragmentConnections extends Fragment {
         var ip = CoreNetworkUtils.getIPAddress(false);
         TextView ipTV = binding.ipTv;
 
-        SharedPreferences sharedPref = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String settingPsk = sharedPref.getString(getString(R.string.last_used_psk), PskUtils.getRandomPsk());
+        String settingPsk = PreferenceUtils.getString(LAST_USED_PSK);
 
         if (ServerService.getPORT() == 0 || ip.equals("null")) {
             ipTV.setText(getString(R.string.server_is_not_started));
@@ -234,10 +247,6 @@ public class FragmentConnections extends Fragment {
 
 
         binding.pskTv.setText(settingPsk);
-        // todo duplicate; wrong location to save prefs
-        sharedPref.edit()
-                .putString(getString(R.string.last_used_psk), settingPsk)
-                .commit();
     }
 
 

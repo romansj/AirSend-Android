@@ -72,7 +72,7 @@
     <string name="connect">Connect</string>
     <string name="your_devices">Your devices</string>
     <string name="ip_address">IP address</string>
-    <string name="or_enter_ip_and_port_number_manually">Or enter IP and port number manually</string>
+    <string name="connection_details_enter_manually">Or enter connection details manually</string>
     <string name="scan_qr_code">Scan QR code</string>
     <string name="notifications">Notifications</string>
     <string name="enter_device_name">Enter device name</string>
@@ -100,4 +100,6 @@
     <string name="setting_open_links_on_click_description">Clicking on a message with a link will open the link instead of copying it to clipboard</string>
     <string name="this_action_cannot_be_undone">This action cannot be undone</string>
     <string name="delete_messages_question">Delete messages?</string>
+    <string name="password">Password</string>
+    <string name="open_links_on_click">Open links on click</string>
 </resources>

@@ -2,10 +2,11 @@ package com.cherrydev.airsend.app.settings;
 
 import static android.content.Context.POWER_SERVICE;
 import static android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.DEVICE_NAME;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.SEND_CLIPBOARD;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
@@ -21,7 +22,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.cherrydev.airsend.R;
-import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.settings.license.DialogLicenses;
 import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.app.utils.mymodels.EditTextDebounce;
@@ -43,7 +43,7 @@ public class FragmentSettings extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentSettingsBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
@@ -62,37 +62,31 @@ public class FragmentSettings extends Fragment {
         );
 
 
-        SharedPreferences sharedPref = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-
         switchList.forEach(switchMaterial -> {
-            //problem on restore saved instance (if user changed, default is overwritten if no value has yet been set to sharepref)
-            boolean isChecked = sharedPref.getBoolean((String) switchMaterial.getTag(), switchMaterial.isChecked());
+            // problem on restore saved instance (if user changed, default is overwritten if no value has yet been set to sharepref)
+            boolean isChecked = PreferenceUtils.getBoolean(PreferenceKey.valueOf(switchMaterial.getTag().toString()));
             switchMaterial.setChecked(isChecked);
         });
 
 
         CompoundButton.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> {
             String tag = (String) buttonView.getTag();
-
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean(tag, isChecked);
-            editor.apply();
+            PreferenceUtils.updatePreference(PreferenceKey.valueOf(tag), isChecked);
         };
 
         switchList.forEach(switchMaterial -> switchMaterial.setOnCheckedChangeListener(checkedChangeListener));
 
 
-        boolean isChecked = sharedPref.getBoolean((String) binding.btnGroupSendClipboard.getTag(), binding.btnGroupSendClipboard.getCheckedButtonId() == binding.btnSendClipboardAll.getId());
+        boolean isChecked = PreferenceUtils.getBoolean(SEND_CLIPBOARD);
         binding.btnGroupSendClipboard.check(isChecked ? binding.btnSendClipboardAll.getId() : binding.btnSendClipboardAsk.getId());
 
         binding.btnGroupSendClipboard.addOnButtonCheckedListener((group, checkedId, isChecked1) -> {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean((String) binding.btnGroupSendClipboard.getTag(), checkedId == binding.btnSendClipboardAll.getId());
-            editor.apply();
+            boolean sendAllChecked = checkedId == binding.btnSendClipboardAll.getId();
+            PreferenceUtils.updatePreference(SEND_CLIPBOARD, sendAllChecked);
         });
 
 
-        String settingDeviceName = sharedPref.getString(getString(R.string.setting_device_name), Build.MODEL);
+        String settingDeviceName = PreferenceUtils.getString(PreferenceKey.DEVICE_NAME);
         EditText editText = binding.textInputDeviceName.getEditText();
         editText.setText(settingDeviceName.trim());
 
@@ -103,22 +97,18 @@ public class FragmentSettings extends Fragment {
                 return;
             }
 
+            String deviceName = result.trim().isEmpty() ? Build.MODEL : result.trim();
+            PreferenceUtils.updatePreference(DEVICE_NAME, deviceName);
 
-            sharedPref.edit()
-                    .putString(getString(R.string.setting_device_name), result.trim().isEmpty() ? Build.MODEL : result.trim())
-                    .apply();
         }, 200);
 
 
-        String settingPsk = sharedPref.getString(getString(R.string.last_used_psk), PskUtils.getRandomPsk());
-        EditText editTextPsk = binding.textInputPsk.getEditText();
-        editTextPsk.setText(settingPsk);
-
-        EditTextDebounce.create(editTextPsk).watch(result -> {
-            sharedPref.edit()
-                    .putString(getString(R.string.last_used_psk), result)
-                    .commit();
-        }, 200);
+        updatePSKSettings();
+        binding.btnRefreshPsk.setOnClickListener(v -> {
+            String randomPsk = PskUtils.getRandomPsk();
+            PreferenceUtils.updatePreference(PreferenceKey.LAST_USED_PSK, randomPsk);
+            updatePSKSettings();
+        });
 
 
         updateBatteryOptButton();
@@ -133,25 +123,35 @@ public class FragmentSettings extends Fragment {
         binding.btnLicenses.setOnClickListener(v -> DialogLicenses.newInstance().show(getParentFragmentManager(), null));
 
 
+        devSettings();
+    }
+
+    private void devSettings() {
         binding.imageViewAbout.setOnClickListener(v -> {
             countClickedAbout++;
             if (countClickedAbout == 3) {
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putBoolean((String) v.getTag(), true);
-                editor.apply();
-
+                String preferenceKey = (String) v.getTag();
+                PreferenceUtils.updatePreference(PreferenceKey.valueOf(preferenceKey), true);
                 Toast.makeText(requireContext(), "You have enabled developer settings. Please restart the app.", Toast.LENGTH_LONG).show();
             }
         });
 
         binding.imageViewAbout.setOnLongClickListener(v -> {
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putBoolean((String) v.getTag(), false);
-            editor.apply();
-
+            String preferenceKey = (String) v.getTag();
+            PreferenceUtils.updatePreference(PreferenceKey.valueOf(preferenceKey), false);
             Toast.makeText(requireContext(), "You have disabled developer settings. Please restart the app.", Toast.LENGTH_LONG).show();
             return true;
         });
+    }
+
+    private void updatePSKSettings() {
+        String settingPsk = PreferenceUtils.getString(LAST_USED_PSK);
+        EditText editTextPsk = binding.textInputPsk.getEditText();
+        editTextPsk.setText(settingPsk);
+
+        EditTextDebounce.create(editTextPsk).watch(result -> {
+            PreferenceUtils.updatePreference(LAST_USED_PSK, result);
+        }, 200);
     }
 
 

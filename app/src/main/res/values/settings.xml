@@ -8,6 +8,6 @@
     <string name="setting_show_notifications">setting_show_notifications</string>
     <string name="setting_device_name">setting_device_name</string>
     <string name="setting_show_notifications_message">setting_show_notifications_message</string>
-    <string name="setting_open_links_on_click">Open links on click</string>
+    <string name="setting_open_links_on_click">setting_open_links_on_click</string>
 
 </resources>

@@ -1,6 +1,10 @@
 package com.cherrydev.airsend.app.service;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.last_used_port;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.setting_show_notifications;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.setting_show_notifications_message;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_OPEN_APP;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_SHARE_CLIPBOARD;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_STOP_SERVICE;
@@ -11,7 +15,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
@@ -25,9 +28,9 @@ import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.UserMessage;
 import com.cherrydev.airsend.app.service.notification.NotificationUtils;
+import com.cherrydev.airsend.app.settings.PreferenceUtils;
 import com.cherrydev.airsend.app.utils.IntentActivity;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
-import com.cherrydev.airsend.app.utils.PskUtils;
 import com.cherrydev.airsend.app.utils.ServiceUtils;
 import com.cherrydev.clipboard.ClipboardUtils;
 
@@ -71,8 +74,7 @@ public class ServerService extends Service {
         Context context = MyApplication.getInstance().getApplicationContext();
 
 
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        PORT = sharedPref.getInt(context.getString(R.string.last_used_port), 0); //will be updated with available one shortly
+        PORT = PreferenceUtils.getInt(last_used_port); // will be updated with available one shortly
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -139,15 +141,10 @@ public class ServerService extends Service {
         }
 
 
-        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        int savedPort = sharedPref.getInt(getString(R.string.last_used_port), 0);
+        int savedPort = PreferenceUtils.getInt(last_used_port);
         savedPort = Math.max(savedPort, 0);
 
-        String savedPsk = sharedPref.getString(getString(R.string.last_used_psk), PskUtils.getRandomPsk());
-        // todo duplicate; wrong location to save prefs
-        sharedPref.edit()
-                .putString(getString(R.string.last_used_psk), savedPsk)
-                .commit();
+        String savedPsk = PreferenceUtils.getString(LAST_USED_PSK);
 
         //todo shouldnt this be done in server ssl?
         ServerManager serverManager = ServerManager.getInstance();
@@ -157,7 +154,7 @@ public class ServerService extends Service {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        var ownerProperties = MyApplication.getOwnerProperties(this);
+        var ownerProperties = MyApplication.getOwnerProperties();
         serverManager.setOwnerProperties(ownerProperties);
 
         if (disposableEvent != null) disposableEvent.dispose(); // service killed, but ServerManager instance still lives, thus without disposing you would add a second subscription
@@ -178,10 +175,7 @@ public class ServerService extends Service {
 
         PORT = serverMessage.getPort(); //only update in case of listen because EVENT also receives callback about individual server sockets working with their single clients
 
-        SharedPreferences sharedPref = this.getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putInt(getString(R.string.last_used_port), PORT);
-        editor.apply();
+        PreferenceUtils.updatePreference(last_used_port, PORT);
     }
 
 
@@ -197,7 +191,7 @@ public class ServerService extends Service {
 
         MessageType type = message.getType();
         if (message.isConnectionType()) {
-            boolean showConnectNotifications = getSetting(R.string.setting_show_notifications);
+            boolean showConnectNotifications = PreferenceUtils.getBoolean(setting_show_notifications);
             if (showConnectNotifications) {
                 String messageText = type == MessageType.CONNECT ? getString(R.string.connected) : getString(R.string.disconnected);
                 NotificationUtils.showNotification(ip, messageText);
@@ -212,7 +206,7 @@ public class ServerService extends Service {
 
         } else {
             ClipboardUtils.copyToClipboard(this, text);
-            boolean showMessageNotifications = getSetting(R.string.setting_show_notifications_message);
+            boolean showMessageNotifications = PreferenceUtils.getBoolean(setting_show_notifications_message);
             if (showMessageNotifications) NotificationUtils.showNotification(ip, text);
         }
 
@@ -222,11 +216,6 @@ public class ServerService extends Service {
             UserMessage userMessage = new UserMessage(ip, device != null ? device.getPort() : message.getPort(), text, type, message.getDateTime());
             databaseManager.addMessage(userMessage).run();
         });
-    }
-
-    private boolean getSetting(int p) {
-        SharedPreferences sharedPref = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        return sharedPref.getBoolean(getString(p), true);
     }
 
 

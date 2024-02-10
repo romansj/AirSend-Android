@@ -95,7 +95,7 @@
                     android:minHeight="0dp"
                     android:padding="@dimen/medium"
                     android:tag="@string/setting_open_links_on_click"
-                    android:text="@string/setting_open_links_on_click"
+                    android:text="@string/open_links_on_click"
                     android:textSize="14sp" />
 
                 <TextView
@@ -176,20 +176,37 @@
                         android:maxLength="@integer/device_name_length" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/text_input_psk"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:hintEnabled="false">
+                    android:orientation="horizontal">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/text_input_psk"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                         android:layout_width="match_parent"
-                        android:layout_marginStart="@dimen/medium"
-                        android:layout_marginEnd="@dimen/medium"
                         android:layout_height="wrap_content"
-                        android:maxLength="@integer/device_name_length" />
-                </com.google.android.material.textfield.TextInputLayout>
+                        app:hintEnabled="false"
+                        android:enabled="false"
+                        android:layout_weight="1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_marginStart="@dimen/medium"
+                            android:layout_marginEnd="@dimen/medium"
+                            android:layout_height="wrap_content"
+                            android:maxLength="@integer/device_name_length" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        style="@style/Button.IconOnly"
+                        android:id="@+id/btn_refresh_psk"
+                        android:layout_width="52dp"
+                        android:layout_height="52dp"
+                        app:icon="@drawable/refresh" />
+
+                </LinearLayout>
+
 
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

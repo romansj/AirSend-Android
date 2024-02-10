@@ -1,16 +1,14 @@
 package com.cherrydev.airsend.app;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.StrictMode;
 
 import com.cherrydev.airsend.BuildConfig;
-import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.DatabaseManager;
 import com.cherrydev.airsend.app.service.ServerService;
 import com.cherrydev.airsend.app.service.notification.NotificationUtils;
+import com.cherrydev.airsend.app.settings.PreferenceKey;
+import com.cherrydev.airsend.app.settings.PreferenceUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
@@ -39,11 +37,9 @@ public class MyApplication extends Application {
         return INSTANCE;
     }
 
-    public static OwnerProperties getOwnerProperties(Context context) {
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-        String settingDeviceName = sharedPref.getString(context.getString(R.string.setting_device_name), Build.MODEL);
-        OwnerProperties ownerProperties = new OwnerProperties(ServerService.getPORT(), settingDeviceName, "A");
-        return ownerProperties;
+    public static OwnerProperties getOwnerProperties() {
+        var settingDeviceName = PreferenceUtils.getString(PreferenceKey.DEVICE_NAME);
+        return new OwnerProperties(ServerService.getPORT(), settingDeviceName, "A");
     }
 
     @Override

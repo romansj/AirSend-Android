@@ -1,10 +1,9 @@
 package com.cherrydev.airsend.app.messages;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.setting_open_links_on_click;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,6 +29,7 @@ import com.cherrydev.airsend.app.MyApplication;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.UserMessage;
 import com.cherrydev.airsend.app.messages.recipient.DialogChooseRecipients;
+import com.cherrydev.airsend.app.settings.PreferenceUtils;
 import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.app.utils.NetworkUtils;
 import com.cherrydev.airsend.databinding.FragmentMessagesBinding;
@@ -274,15 +274,13 @@ public class FragmentMessages extends Fragment {
     }
 
     private void initMessageList() {
-        SharedPreferences sharedPreferences = MyApplication.getInstance().getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-
         OnClickListener<UserMessage> clickListener = new OnClickListener<>() {
             @Override
             public void onClick(UserMessage message) {
                 var messageText = message.getText();
                 var isLink = Patterns.WEB_URL.matcher(messageText).matches();
 
-                var settingOpenLinks = sharedPreferences.getBoolean(getString(R.string.setting_open_links_on_click), true);
+                var settingOpenLinks = PreferenceUtils.getBoolean(setting_open_links_on_click);
                 if (isLink && settingOpenLinks) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(messageText)));
                     return;
