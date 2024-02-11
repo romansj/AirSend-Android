@@ -28,9 +28,9 @@ public class AppViewModel extends ViewModel {
     private NavUtils.Tag navigationTag = NavUtils.Tag.MESSAGES;
     private LiveData<List<SentMessage>> sentMessages;
 
-    private List<MessageType> types;
-    private long dateFrom;
-    private long dateUntil;
+    private List<MessageType> types = List.of(MessageType.values());
+    private long dateFrom = -1;
+    private long dateUntil = -1;
 
 
     public AppViewModel() {
@@ -88,6 +88,6 @@ public class AppViewModel extends ViewModel {
     public void setSentMessageFilter(@Nullable LocalDateTime dateFrom, @Nullable LocalDateTime dateUntil, @NonNull List<MessageType> types) {
         this.dateFrom = dateFrom == null ? -1 : CommonTimeUtils.Convert.toMillis(dateFrom);
         this.dateUntil = dateUntil == null ? -1 : CommonTimeUtils.Convert.toMillis(dateUntil);
-        this.types = types;
+        this.types = types.isEmpty() ? List.of(MessageType.values()) : types;
     }
 }

@@ -165,7 +165,6 @@ public class FragmentMessages extends Fragment {
 
                 getHandler().postDelayed(() -> KeyboardUtils.showKeyboard(binding.inputLayoutMessage.getEditText(), requireContext()), 100);
             }
-
         };
 
 
@@ -304,7 +303,8 @@ public class FragmentMessages extends Fragment {
             }
         };
 
-        MessageAdapter<UserMessage> adapter = new MessageAdapter<>(clickListener);
+        MessageAdapter<UserMessage> adapter = new MessageAdapter<>();
+        adapter.setOnClickListener(clickListener);
         adapter.setHasStableIds(true);
         viewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
             adapter.updateData(messages);

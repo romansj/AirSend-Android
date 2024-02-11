@@ -19,15 +19,10 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MessageAdapter<T extends IMessage> extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
+public class MessageAdapter<T extends IMessage> extends RecyclerView.Adapter<MessageAdapter<T>.ViewHolder> {
 
     private OnClickListener<T> onClickListener;
     private List<T> items = new ArrayList<>();
-
-
-    public MessageAdapter(OnClickListener<T> onClickListener) {
-        this.onClickListener = onClickListener;
-    }
 
 
     @NonNull
@@ -133,10 +128,9 @@ public class MessageAdapter<T extends IMessage> extends RecyclerView.Adapter<Mes
     }
 
 
-    public void setOnClickListener(OnClickListener onClickListener) {
+    public void setOnClickListener(OnClickListener<T> onClickListener) {
         this.onClickListener = onClickListener;
     }
-
 
     public class ChipDiffUtil extends DiffUtil.Callback {
 

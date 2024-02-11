@@ -1,18 +1,14 @@
 package com.cherrydev.airsend.app.messages;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,18 +21,14 @@ import com.cherrydev.airsend.app.utils.DialogRecyclerViewAction;
 import com.cherrydev.airsend.databinding.DialogSentMessagesBinding;
 import com.cherrydev.clipboard.ClipboardUtils;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import io.github.romansj.core.MessageType;
 import io.github.romansj.core.client.ClientManager;
-import timber.log.Timber;
 
 
 public class FragmentSentMessages extends Fragment {
-
 
     private DialogSentMessagesBinding binding;
     private AppViewModel viewModel;
@@ -62,8 +54,68 @@ public class FragmentSentMessages extends Fragment {
     }
 
 
+    class ListFilter {
+        LocalDate dateFrom;
+        LocalDate dateTo;
+        LocalTime timeFrom;
+        LocalTime timeTo;
+
+        public LocalDate getDateFrom() {
+            return dateFrom;
+        }
+
+        public void setDateFrom(LocalDate dateFrom) {
+            this.dateFrom = dateFrom;
+        }
+
+        public LocalDate getDateTo() {
+            return dateTo;
+        }
+
+        public void setDateTo(LocalDate dateTo) {
+            this.dateTo = dateTo;
+        }
+
+        public LocalTime getTimeFrom() {
+            return timeFrom;
+        }
+
+        public void setTimeFrom(LocalTime timeFrom) {
+            this.timeFrom = timeFrom;
+        }
+
+        public LocalTime getTimeTo() {
+            return timeTo;
+        }
+
+        public void setTimeTo(LocalTime timeTo) {
+            this.timeTo = timeTo;
+        }
+    }
+
     private void initMessageList() {
-        OnClickListener<SentMessage> clickListener = new OnClickListener<>() {
+        var adapter = new MessageAdapter<SentMessage>();
+        adapter.setOnClickListener(getOnClickListener());
+        adapter.setHasStableIds(true);
+
+        viewModel.getSentMessages().observe(getViewLifecycleOwner(), messages -> {
+            adapter.updateData(messages);
+            updateListVisibility(messages);
+        });
+
+        binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.include.recyclerView.setAdapter(adapter);
+    }
+
+    private void updateListVisibility(List<SentMessage> messages) {
+        var listEmpty = messages.isEmpty();
+        binding.include.tvEmptyRvMessages.setVisibility(listEmpty ? View.VISIBLE : View.GONE);
+        binding.include.recyclerView.setVisibility(listEmpty ? View.GONE : View.VISIBLE);
+    }
+
+    @NonNull
+    private OnClickListener<SentMessage> getOnClickListener() {
+        return new OnClickListener<>() {
             @Override
             public void onClick(SentMessage message) {
                 ClipboardUtils.copyToClipboard(MyApplication.getInstance(), message.getText());
@@ -72,79 +124,34 @@ public class FragmentSentMessages extends Fragment {
 
             @Override
             public void onLongClick(SentMessage message) {
-                DialogRecyclerViewAction.DialogButtonListener<MessageActionWrapper> listener = item -> handleMessageActionChoice(message, item.getMessageAction());
-
-                List<MessageActionWrapper> list = List.of(
-                        new MessageActionWrapper(MessageAction.RESEND, getString(R.string.resend)),
-                        new MessageActionWrapper(MessageAction.COPY_IP, getString(R.string.copy_IP)),
-                        new MessageActionWrapper(MessageAction.COPY_MESSAGE, getString(R.string.copy_message)),
-                        new MessageActionWrapper(MessageAction.DELETE, getString(R.string.delete)));
-
-                DialogRecyclerViewAction<MessageActionWrapper> dialog = DialogRecyclerViewAction.newInstance(getString(R.string.message_actions), getString(R.string.what_would_you_like_to_do_with_the_message), list, "", getString(R.string.cancel), listener);
-                dialog.show(getParentFragmentManager(), null);
+                showMessageActionDialog(message);
             }
         };
-
-
-        var messageTypes = List.of(MessageType.MESSAGE, MessageType.CONNECT);
-        initFilter2(binding.dropdownMssgType.getEditText(), "Type", messageTypes.stream().map(Enum::name).collect(Collectors.toList()));
-        var dateAdapter = initFilter2(binding.dropdownMssgDate.getEditText(), "Date");
-        MyApplication.getDatabaseManager().getDb().getUniqueDates().observe(getViewLifecycleOwner(), dates -> {
-            dateAdapter.clear();
-            dateAdapter.addAll(dates);
-        });
-        setFilter(null, null, messageTypes);
-
-
-        MessageAdapter<SentMessage> adapter = new MessageAdapter<>(clickListener);
-        adapter.setHasStableIds(true);
-        viewModel.getSentMessages().observe(getViewLifecycleOwner(), messages -> {
-            adapter.updateData(messages);
-            binding.include.tvEmptyRvMessages.setVisibility(messages.size() == 0 ? View.VISIBLE : View.GONE);
-            binding.include.recyclerView.setVisibility(messages.size() != 0 ? View.VISIBLE : View.GONE);
-        });
-
-
-        binding.include.recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.include.recyclerView.setAdapter(adapter);
     }
 
-    ArrayAdapter<String> initFilter2(EditText editText, String emptyText) {
-        return initFilter2(editText, emptyText, new ArrayList<>());
+    List<MessageActionWrapper> messageActionsList = List.of(
+//            new MessageActionWrapper(MessageAction.RESEND, getString(R.string.resend)),
+//            new MessageActionWrapper(MessageAction.COPY_IP, getString(R.string.copy_IP)),
+//            new MessageActionWrapper(MessageAction.COPY_MESSAGE, getString(R.string.copy_message)),
+//            new MessageActionWrapper(MessageAction.DELETE, getString(R.string.delete))
+    );
+
+    private void showMessageActionDialog(SentMessage message) {
+        var dialog = DialogRecyclerViewAction.newInstance(
+                getString(R.string.message_actions),
+                getString(R.string.what_would_you_like_to_do_with_the_message),
+                messageActionsList, "", getString(R.string.cancel),
+                item -> handleMessageAction(message, item.getMessageAction()));
+
+        showDialog(dialog);
     }
 
-    ArrayAdapter<String> initFilter2(EditText editText, String emptyText, List<String> values) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), R.layout.list_item, values);
-
-        ((AutoCompleteTextView) editText).setAdapter(adapter);
-        ((AutoCompleteTextView) editText).setText(emptyText, false);
-
-        editText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Timber.d("onTextChanged " + s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        return adapter;
+    private void showDialog(DialogFragment dialog) {
+        dialog.show(getParentFragmentManager(), null);
     }
 
 
-    private void setFilter(LocalDateTime dateFrom, LocalDateTime dateUntil, List<MessageType> types) {
-        viewModel.setSentMessageFilter(dateFrom, dateUntil, types);
-    }
-
-    private void handleMessageActionChoice(SentMessage message, MessageAction messageAction) {
+    private void handleMessageAction(SentMessage message, MessageAction messageAction) {
         switch (messageAction) {
             case RESEND:
                 message.setRetryCount(0);

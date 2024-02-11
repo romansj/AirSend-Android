@@ -128,8 +128,8 @@ public interface DbDao {
     )
     LiveData<List<SentMessage>> getSentMessages(long dateFrom, long dateUntil, List<MessageType> types);
 
-    @Query("SELECT DISTINCT date (dateTime/1000, 'unixepoch') FROM SentMessage ORDER BY dateTime ASC")
-    LiveData<List<String>> getUniqueDates();
+//    @Query("SELECT DISTINCT date (dateTime/1000, 'unixepoch') FROM SentMessage ORDER BY dateTime ASC")
+//    LiveData<List<String>> getUniqueDates();
 
 
     @Query("DELETE FROM SentMessage")
