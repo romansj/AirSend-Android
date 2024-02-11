@@ -38,14 +38,15 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import io.github.romansj.core.ClientMessage;
-import io.github.romansj.core.MessageType;
-import io.github.romansj.core.OwnerProperties;
+
 import io.github.romansj.core.Status;
+import io.github.romansj.core.message.DeviceProperties;
+import io.github.romansj.core.message.Message;
+import io.github.romansj.core.message.MessageType;
+import io.github.romansj.core.server.ServerEvent;
 import io.github.romansj.core.server.ServerManager;
-import io.github.romansj.core.server.ServerMessage;
 import io.github.romansj.core.server.ServerOperation;
-import io.github.romansj.core.ssl.SSLUtils;
+import io.github.romansj.core.utils.SSLUtils;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
@@ -149,10 +150,10 @@ public class ServerService extends Service {
         //todo shouldnt this be done in server ssl?
         ServerManager serverManager = ServerManager.getInstance();
         try {
-            // serverManager.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
             serverManager.setSSLServerSocketFactory(SSLUtils.getSSLServerSocketFactory("hint", savedPsk));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Timber.d("Could not start server %s", e.getMessage());
+            return;
         }
         var ownerProperties = MyApplication.getOwnerProperties();
         serverManager.setOwnerProperties(ownerProperties);
@@ -161,15 +162,15 @@ public class ServerService extends Service {
         if (disposableMssg != null) disposableMssg.dispose();
 
         disposableMssg = serverManager.startServer(savedPort).subscribeOn(Schedulers.io()).subscribe(
-                serverMessage -> processServerMessage(serverMessage),
-                throwable -> Timber.d("serverSSL error: " + throwable.toString())
+                this::processServerMessage,
+                throwable -> Timber.d("serverSSL error: %s", throwable.toString())
         );
         disposableEvent = serverManager.getObservableMessageEvent().subscribeOn(Schedulers.io()).subscribe(
-                serverMessage2 -> processServerEvent(serverMessage2),
-                throwable -> Timber.d("serverSSL error: " + throwable.toString()));
+                this::processServerEvent,
+                throwable -> Timber.d("serverSSL error: %s", throwable.toString()));
     }
 
-    private void processServerEvent(ServerMessage serverMessage) {
+    private void processServerEvent(ServerEvent serverMessage) {
         if (!serverMessage.getOperation().equals(ServerOperation.LISTEN)) return;
 
 
@@ -184,7 +185,7 @@ public class ServerService extends Service {
     }
 
 
-    private void processServerMessage(ClientMessage message) {
+    private void processServerMessage(Message message) {
         String text = message.getUserMessage();
         String ip = message.getIP();
         Timber.d("SERVER MSSG: " + ip + ", :" + text);
@@ -198,7 +199,7 @@ public class ServerService extends Service {
             }
 
 
-            OwnerProperties ownerProperties = OwnerProperties.fromReceived(text);
+            DeviceProperties ownerProperties = DeviceProperties.fromReceived(text);
             if (ownerProperties != null) {
                 Device device = new Device(ownerProperties.getName(), ip, ownerProperties.getPort(), ownerProperties.getClientType(), message.getType() == MessageType.CONNECT ? Status.RUNNING : Status.NOT_RUNNING);
                 databaseManager.addDevice(device).runInBackground().run();

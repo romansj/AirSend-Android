@@ -12,9 +12,16 @@ java {
 
 apply from: "${rootDir}/gradle/android.gradle"
 
+android {
+    buildFeatures {
+        buildConfig true
+    }
+}
+
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.aar'])
     coreLibraryDesugaring libs.desugar.jdk.libs
 
     implementation(libs.airsend.core.java)

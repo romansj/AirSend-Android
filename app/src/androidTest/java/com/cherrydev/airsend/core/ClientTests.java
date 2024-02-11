@@ -26,11 +26,12 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
-import io.github.romansj.core.OwnerProperties;
+
 import io.github.romansj.core.Status;
 import io.github.romansj.core.client.ClientManager;
-import io.github.romansj.core.ssl.SSLUtils;
-import io.github.romansj.utils.CoreNetworkUtils;
+import io.github.romansj.core.message.DeviceProperties;
+import io.github.romansj.core.utils.CoreNetworkUtils;
+import io.github.romansj.core.utils.SSLUtils;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 
@@ -129,7 +130,7 @@ public class ClientTests {
         // clientManager.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
         clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("test", "test123"));
 
-        var ownerProperties = new OwnerProperties(port, "Instrumentation Runner", "Process");
+        var ownerProperties = new DeviceProperties(port, "Instrumentation Runner", "Process");
         clientManager.setOwnerProperties(ownerProperties);
 
         return clientManager;

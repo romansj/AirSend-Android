@@ -20,10 +20,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 
-import io.github.romansj.core.ClientMessage;
+import io.github.romansj.core.message.Message;
 import io.github.romansj.core.server.ServerManager;
-import io.github.romansj.core.ssl.SSLUtils;
-import io.github.romansj.utils.CoreNetworkUtils;
+
+import io.github.romansj.core.utils.CoreNetworkUtils;
+import io.github.romansj.core.utils.SSLUtils;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.plugins.RxJavaPlugins;
 import io.reactivex.rxjava3.schedulers.Schedulers;
@@ -63,8 +64,8 @@ public class ServerTests {
     public void runningServerDoesNotRunTwice() throws UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException, KeyManagementException {
         ServerManager serverManager = getServerManager();
 
-        Observable<ClientMessage> messageObservableStart = serverManager.startServer(port);
-        Observable<ClientMessage> messageObservableStartAgain = serverManager.startServer(port);
+        Observable<Message> messageObservableStart = serverManager.startServer(port);
+        Observable<Message> messageObservableStartAgain = serverManager.startServer(port);
 
         // start a started server should just return its observable
         assertThat(messageObservableStartAgain).isSameInstanceAs(messageObservableStart);
@@ -74,9 +75,9 @@ public class ServerTests {
     public void restartedServerReturnsNewObservable() throws UnrecoverableKeyException, CertificateException, KeyStoreException, NoSuchAlgorithmException, IOException, KeyManagementException {
         ServerManager serverManager = getServerManager();
 
-        Observable<ClientMessage> messageObservableStart = serverManager.startServer(port);
+        Observable<Message> messageObservableStart = serverManager.startServer(port);
         serverManager.stopServer();
-        Observable<ClientMessage> messageObservableStartAgain = serverManager.startServer(port);
+        Observable<Message> messageObservableStartAgain = serverManager.startServer(port);
 
         // two diff instances unless cleanup was skipped
         assertThat(messageObservableStartAgain).isNotSameInstanceAs(messageObservableStart);

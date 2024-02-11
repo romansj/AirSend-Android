@@ -1,7 +1,7 @@
 package com.cherrydev.airsend.app.database;
 
-import io.github.romansj.utils.MyResult;
-import io.github.romansj.utils.RxHelper;
+import io.github.romansj.core.utils.MyResult;
+import io.github.romansj.core.utils.TaskRunner;
 
 public class DatabaseQuery {
     private Runnable runnable;
@@ -47,13 +47,7 @@ public class DatabaseQuery {
 
     private void run() {
         if (runInBackground) {
-//            Observable.fromRunnable(runnable).subscribe(t -> {
-//
-//            }, throwable -> {
-//
-//            });
-
-            RxHelper.submitToRx(() -> {
+            TaskRunner.submit(() -> {
                 runnable.run();
                 return MyResult.success();
             });

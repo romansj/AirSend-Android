@@ -11,13 +11,13 @@ import androidx.room.Update;
 import com.cherrydev.airsend.app.database.models.Device;
 import com.cherrydev.airsend.app.database.models.SentMessage;
 import com.cherrydev.airsend.app.database.models.UserMessage;
+import com.cherrydev.airsend.app.messages.SentStatus;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.github.romansj.core.MessageType;
-import io.github.romansj.core.SentStatus;
 import io.github.romansj.core.Status;
+import io.github.romansj.core.message.MessageType;
 import io.reactivex.rxjava3.core.Single;
 
 @Dao

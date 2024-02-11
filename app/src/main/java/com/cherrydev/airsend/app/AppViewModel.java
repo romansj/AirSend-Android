@@ -17,7 +17,8 @@ import com.cherrydev.time.CommonTimeUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import io.github.romansj.core.MessageType;
+import io.github.romansj.core.message.MessageType;
+
 
 public class AppViewModel extends ViewModel {
     private MutableLiveData<String> textToSend = new MutableLiveData<>();

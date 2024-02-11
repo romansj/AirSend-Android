@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 
-import io.github.romansj.core.MessageType;
+import io.github.romansj.core.message.MessageType;
 
 
 @RunWith(AndroidJUnit4.class)

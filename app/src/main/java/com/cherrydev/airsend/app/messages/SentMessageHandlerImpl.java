@@ -6,14 +6,13 @@ import androidx.annotation.Nullable;
 
 import com.cherrydev.airsend.app.database.models.SentMessage;
 
-import io.github.romansj.core.ClientMessage;
-import io.github.romansj.core.SentStatus;
 import io.github.romansj.core.client.ClientResult;
 import io.github.romansj.core.client.ISentMessageHandler;
+import io.github.romansj.core.message.Message;
 
 public class SentMessageHandlerImpl implements ISentMessageHandler {
     @Override
-    public void updateMessageStatus(ClientMessage message, ClientResult clientResult) {
+    public void updateMessageStatus(Message message, ClientResult clientResult) {
         SentMessage sentMessage = getAndAddSentMessage(message);
         if (sentMessage == null) return;
 
@@ -24,7 +23,7 @@ public class SentMessageHandlerImpl implements ISentMessageHandler {
 
 
     @Override
-    public void updateMessageStatus(ClientMessage message, Throwable throwable) {
+    public void updateMessageStatus(Message message, Throwable throwable) {
         SentMessage sentMessage = getAndAddSentMessage(message);
         if (sentMessage == null) return;
 
@@ -34,7 +33,7 @@ public class SentMessageHandlerImpl implements ISentMessageHandler {
     }
 
     @Nullable
-    private SentMessage getAndAddSentMessage(ClientMessage message) {
+    private SentMessage getAndAddSentMessage(Message message) {
         var sentMessage = databaseManager.getDb().findSentMessage(message.getIdentifier());
         if (sentMessage == null) {
             sentMessage = new SentMessage(message);
@@ -46,7 +45,7 @@ public class SentMessageHandlerImpl implements ISentMessageHandler {
 
 
     @Override
-    public long addSentMessage(ClientMessage message) {
+    public long addSentMessage(Message message) {
         var sentMessage = new SentMessage(message);
         return databaseManager.addSentMessage(sentMessage); // TODO within return QueryBuilder run() convention, how to return some value?
     }

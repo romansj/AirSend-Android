@@ -21,7 +21,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.cherrydev.airsend.R;
 
-import io.github.romansj.utils.ObservableSubject;
+import io.github.romansj.core.utils.ObservableSubject;
 import timber.log.Timber;
 
 public class ScanBarcodeActivity extends AppCompatActivity {

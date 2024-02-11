@@ -41,8 +41,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.romansj.core.client.ClientManager;
-import io.github.romansj.core.ssl.SSLUtils;
-import io.github.romansj.utils.CoreNetworkUtils;
+import io.github.romansj.core.utils.CoreNetworkUtils;
+import io.github.romansj.core.utils.SSLUtils;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 

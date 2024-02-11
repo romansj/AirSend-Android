@@ -6,10 +6,11 @@ import com.cherrydev.airsend.app.database.models.Device;
 
 import java.util.List;
 
-import io.github.romansj.core.ClientMessage;
-import io.github.romansj.core.OwnerProperties;
+
 import io.github.romansj.core.Status;
 import io.github.romansj.core.client.IClientHandler;
+import io.github.romansj.core.message.DeviceProperties;
+import io.github.romansj.core.message.Message;
 
 public class ClientHandlerImpl implements IClientHandler {
 
@@ -17,7 +18,7 @@ public class ClientHandlerImpl implements IClientHandler {
 
     @Override
     public void updateClient(String ip, Status b, String textResponse) {
-        OwnerProperties ownerProperties = OwnerProperties.fromReceived(textResponse);
+        DeviceProperties ownerProperties = DeviceProperties.fromReceived(textResponse);
         if (ownerProperties != null) {
             Device device = new Device(ownerProperties.getName(), ip, ownerProperties.getPort(), ownerProperties.getClientType(), b);
             databaseManager.addDevice(device).runInBackground().run();
@@ -29,7 +30,7 @@ public class ClientHandlerImpl implements IClientHandler {
     }
 
     @Override
-    public void updateClient(ClientMessage message, String textResponse) {
+    public void updateClient(Message message, String textResponse) {
         updateClient(
                 message.getIP(),
                 message.isKill() ? Status.NOT_RUNNING : Status.RUNNING,

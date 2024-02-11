@@ -5,7 +5,8 @@ import androidx.room.PrimaryKey;
 
 import com.cherrydev.airsend.app.messages.IMessage;
 
-import io.github.romansj.core.MessageType;
+import io.github.romansj.core.message.MessageType;
+
 
 @Entity
 public class UserMessage implements IMessage {

@@ -22,8 +22,7 @@ import java.security.Security;
 
 import javax.net.ssl.SSLContext;
 
-import io.github.romansj.core.Constants;
-import io.github.romansj.core.OwnerProperties;
+import io.github.romansj.core.message.DeviceProperties;
 import timber.log.Timber;
 
 public class MyApplication extends Application {
@@ -37,9 +36,9 @@ public class MyApplication extends Application {
         return INSTANCE;
     }
 
-    public static OwnerProperties getOwnerProperties() {
+    public static DeviceProperties getOwnerProperties() {
         var settingDeviceName = PreferenceUtils.getString(PreferenceKey.DEVICE_NAME);
-        return new OwnerProperties(ServerService.getPORT(), settingDeviceName, "A");
+        return new DeviceProperties(ServerService.getPORT(), settingDeviceName, "A");
     }
 
     @Override
@@ -68,7 +67,7 @@ public class MyApplication extends Application {
         try {
             ProviderInstaller.installIfNeeded(getApplicationContext());
             SSLContext sslContext;
-            sslContext = SSLContext.getInstance(Constants.TLS_1_2);
+            sslContext = SSLContext.getInstance("TLSv1.2");
             sslContext.init(null, null, null);
             sslContext.createSSLEngine();
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException | NoSuchAlgorithmException | KeyManagementException e) {

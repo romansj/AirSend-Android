@@ -35,7 +35,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.stream.Collectors;
 
 import io.github.romansj.core.client.ClientManager;
-import io.github.romansj.core.ssl.SSLUtils;
+import io.github.romansj.core.utils.SSLUtils;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
 
