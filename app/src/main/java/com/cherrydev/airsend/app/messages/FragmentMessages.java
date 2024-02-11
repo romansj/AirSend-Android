@@ -1,7 +1,7 @@
 package com.cherrydev.airsend.app.messages;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
-import static com.cherrydev.airsend.app.settings.PreferenceKey.setting_open_links_on_click;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.OPEN_LINKS_ON_CLICK;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -279,7 +279,7 @@ public class FragmentMessages extends Fragment {
                 var messageText = message.getText();
                 var isLink = Patterns.WEB_URL.matcher(messageText).matches();
 
-                var settingOpenLinks = PreferenceUtils.getBoolean(setting_open_links_on_click);
+                var settingOpenLinks = PreferenceUtils.getBoolean(OPEN_LINKS_ON_CLICK);
                 if (isLink && settingOpenLinks) {
                     startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(messageText)));
                     return;

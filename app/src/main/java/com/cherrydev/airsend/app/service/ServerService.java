@@ -2,9 +2,9 @@ package com.cherrydev.airsend.app.service;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
-import static com.cherrydev.airsend.app.settings.PreferenceKey.last_used_port;
-import static com.cherrydev.airsend.app.settings.PreferenceKey.setting_show_notifications;
-import static com.cherrydev.airsend.app.settings.PreferenceKey.setting_show_notifications_message;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PORT;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.SHOW_NOTIFICATIONS;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.SHOW_NOTIFICATIONS_MESSAGE;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_OPEN_APP;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_SHARE_CLIPBOARD;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_STOP_SERVICE;
@@ -75,7 +75,7 @@ public class ServerService extends Service {
         Context context = MyApplication.getInstance().getApplicationContext();
 
 
-        PORT = PreferenceUtils.getInt(last_used_port); // will be updated with available one shortly
+        PORT = PreferenceUtils.getInt(LAST_USED_PORT); // will be updated with available one shortly
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -142,7 +142,7 @@ public class ServerService extends Service {
         }
 
 
-        int savedPort = PreferenceUtils.getInt(last_used_port);
+        int savedPort = PreferenceUtils.getInt(LAST_USED_PORT);
         savedPort = Math.max(savedPort, 0);
 
         String savedPsk = PreferenceUtils.getString(LAST_USED_PSK);
@@ -176,7 +176,7 @@ public class ServerService extends Service {
 
         PORT = serverMessage.getPort(); //only update in case of listen because EVENT also receives callback about individual server sockets working with their single clients
 
-        PreferenceUtils.updatePreference(last_used_port, PORT);
+        PreferenceUtils.updatePreference(LAST_USED_PORT, PORT);
     }
 
 
@@ -192,7 +192,7 @@ public class ServerService extends Service {
 
         MessageType type = message.getType();
         if (message.isConnectionType()) {
-            boolean showConnectNotifications = PreferenceUtils.getBoolean(setting_show_notifications);
+            boolean showConnectNotifications = PreferenceUtils.getBoolean(SHOW_NOTIFICATIONS);
             if (showConnectNotifications) {
                 String messageText = type == MessageType.CONNECT ? getString(R.string.connected) : getString(R.string.disconnected);
                 NotificationUtils.showNotification(ip, messageText);
@@ -207,7 +207,7 @@ public class ServerService extends Service {
 
         } else {
             ClipboardUtils.copyToClipboard(this, text);
-            boolean showMessageNotifications = PreferenceUtils.getBoolean(setting_show_notifications_message);
+            boolean showMessageNotifications = PreferenceUtils.getBoolean(SHOW_NOTIFICATIONS_MESSAGE);
             if (showMessageNotifications) NotificationUtils.showNotification(ip, text);
         }
 

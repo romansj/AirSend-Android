@@ -23,7 +23,7 @@ public class PreferenceUtils {
     );
 
     static Map<PreferenceKey, Integer> mapIntDefaults = Map.of(
-            PreferenceKey.last_used_port, 0
+            PreferenceKey.LAST_USED_PORT, 0
     );
 
 

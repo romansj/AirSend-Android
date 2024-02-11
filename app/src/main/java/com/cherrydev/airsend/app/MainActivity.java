@@ -2,7 +2,7 @@ package com.cherrydev.airsend.app;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
-import static com.cherrydev.airsend.app.settings.PreferenceKey.setting_debug_options;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.DEBUG_OPTIONS;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         initNetworkListener();
 
 
-        boolean isChecked = PreferenceUtils.getBoolean(setting_debug_options);
+        boolean isChecked = PreferenceUtils.getBoolean(DEBUG_OPTIONS);
         binding.linearDebug.setVisibility(isChecked ? View.VISIBLE : View.GONE);
     }
 
