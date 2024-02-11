@@ -109,12 +109,7 @@ public class MainActivity extends AppCompatActivity {
         String settingPsk = PreferenceUtils.getString(LAST_USED_PSK);
         ClientManager clientManager = ClientManager.getInstance();
         clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", settingPsk));
-        // try {
-        //     // instance.setSslContext(SSLUtils.createSSLContext("BKS", MyApplication.getInstance().getResources().openRawResource(R.raw.cherrydev), BuildConfig.CERT_KEY.toCharArray()));
-        //     clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", "pass123"));
-        // } catch (Exception e) {
-        //     throw new RuntimeException(e);
-        // }
+
         clientManager.setMessageHandler(new SentMessageHandlerImpl());
         clientManager.setClientHandler(new ClientHandlerImpl());
 
