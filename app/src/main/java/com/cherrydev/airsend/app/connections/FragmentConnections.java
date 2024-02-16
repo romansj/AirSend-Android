@@ -41,6 +41,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import io.github.romansj.core.client.ClientManager;
+import io.github.romansj.core.server.ServerEvent;
 import io.github.romansj.core.utils.CoreNetworkUtils;
 import io.github.romansj.core.utils.SSLUtils;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
@@ -79,13 +80,13 @@ public class FragmentConnections extends Fragment {
         initBottomSheetDeviceInfo();
 
 
-        RecylerViewAdapterDevice.OnClickListener clickListener = (device, clickItem) -> handleDeviceClick(device, clickItem);
+        RecylerViewAdapterDevice.OnClickListener clickListener = this::handleDeviceClick;
         adapter = new RecylerViewAdapterDevice(clickListener);
         adapter.setHasStableIds(true);
         viewModel.getDevices().observe(getViewLifecycleOwner(), devices -> {
             List<DeviceWrapper> deviceWrapperList = new ArrayList<>();
             long id = 0;
-            for (Device device : devices) {
+            for (var device : devices) {
                 deviceWrapperList.add(new DeviceWrapper(id, device));
                 id++;
             }
@@ -97,13 +98,17 @@ public class FragmentConnections extends Fragment {
         });
 
 
-        RecyclerView recyclerView = binding.recyclerView;
+        var recyclerView = binding.recyclerView;
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
 
         binding.btnStop.setOnClickListener(v -> ServerService.stopService());
         binding.btnStart.setOnClickListener(v -> initServer());
+        viewModel.getServerEventMutableLiveData().observe(getViewLifecycleOwner(), event -> {
+            var text = getServerStatusText(event);
+            binding.tvServerStatus.setText(text);
+        });
 
 
         binding.btnDisconnectAll.setOnClickListener(v -> ClientManager.getInstance().disconnectAll());
@@ -127,6 +132,23 @@ public class FragmentConnections extends Fragment {
             DialogMakeConnection.newInstance(listener).show(getParentFragmentManager(), null);
 
         });
+    }
+
+    @NonNull
+    private String getServerStatusText(ServerEvent event) {
+        var text = "";
+        switch (event.getOperation()) {
+            case START:
+                text = "Starting";
+                break;
+            case STOP:
+                text = "Stopped";
+                break;
+            case LISTEN:
+                text = "Running";
+                break;
+        }
+        return text;
     }
 
     /**

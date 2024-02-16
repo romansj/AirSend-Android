@@ -1,11 +1,16 @@
 package com.cherrydev.airsend.app;
 
+import static com.cherrydev.airsend.app.MyApplication.GSON;
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
-import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
+import static com.cherrydev.airsend.app.service.ServerService.AIRSEND_SERVICE_BROADCAST;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.DEBUG_OPTIONS;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
 import android.net.Network;
@@ -18,6 +23,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.database.ClientHandlerImpl;
@@ -35,6 +41,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.stream.Collectors;
 
 import io.github.romansj.core.client.ClientManager;
+import io.github.romansj.core.server.ServerEvent;
 import io.github.romansj.core.utils.SSLUtils;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import timber.log.Timber;
@@ -106,24 +113,49 @@ public class MainActivity extends AppCompatActivity {
         ServerService.startService();
 
         // called here to set the ClientHandler before any other invocation
-        String settingPsk = PreferenceUtils.getString(LAST_USED_PSK);
-        ClientManager clientManager = ClientManager.getInstance();
+        var settingPsk = PreferenceUtils.getString(LAST_USED_PSK);
+        var clientManager = ClientManager.getInstance();
         clientManager.setSslSocketFactory(SSLUtils.getSSLSocketFactory("android", settingPsk));
 
         clientManager.setMessageHandler(new SentMessageHandlerImpl());
         clientManager.setClientHandler(new ClientHandlerImpl());
 
-        Intent intent = getIntent();
+        var intent = getIntent();
         handleIntent(intent, savedInstanceState);
 
 
         initNetworkListener();
 
 
-        boolean isChecked = PreferenceUtils.getBoolean(DEBUG_OPTIONS);
+        var isChecked = PreferenceUtils.getBoolean(DEBUG_OPTIONS);
         binding.linearDebug.setVisibility(isChecked ? View.VISIBLE : View.GONE);
     }
 
+    IntentFilter filter = new IntentFilter(AIRSEND_SERVICE_BROADCAST);
+    MyBroadcastReceiver receiver = new MyBroadcastReceiver();
+
+    public class MyBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            var event = GSON.fromJson(intent.getStringExtra("event"), ServerEvent.class);
+            viewModel.getServerEventMutableLiveData().setValue(event);
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver);
+
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, filter);
+    }
 
     private void initNetworkListener() {
         networkCallback = new ConnectivityManager.NetworkCallback() {

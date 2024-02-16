@@ -2,6 +2,7 @@ package com.cherrydev.airsend.app.settings;
 
 import static android.content.Context.POWER_SERVICE;
 import static android.provider.Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.*;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.DEVICE_NAME;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.SEND_CLIPBOARD;
@@ -37,8 +38,7 @@ public class FragmentSettings extends Fragment {
     private FragmentSettingsBinding binding;
 
     public static FragmentSettings newInstance() {
-        FragmentSettings fragment = new FragmentSettings();
-        return fragment;
+        return new FragmentSettings();
     }
 
 
@@ -64,14 +64,14 @@ public class FragmentSettings extends Fragment {
 
         switchList.forEach(switchMaterial -> {
             // problem on restore saved instance (if user changed, default is overwritten if no value has yet been set to sharepref)
-            boolean isChecked = PreferenceUtils.getBoolean(PreferenceKey.valueOf(switchMaterial.getTag().toString()));
+            boolean isChecked = PreferenceUtils.getBoolean(switchMaterial.getTag().toString());
             switchMaterial.setChecked(isChecked);
         });
 
 
         CompoundButton.OnCheckedChangeListener checkedChangeListener = (buttonView, isChecked) -> {
             String tag = (String) buttonView.getTag();
-            PreferenceUtils.updatePreference(PreferenceKey.valueOf(tag), isChecked);
+            PreferenceUtils.updatePreference(valueOf(tag), isChecked);
         };
 
         switchList.forEach(switchMaterial -> switchMaterial.setOnCheckedChangeListener(checkedChangeListener));
@@ -86,7 +86,7 @@ public class FragmentSettings extends Fragment {
         });
 
 
-        String settingDeviceName = PreferenceUtils.getString(PreferenceKey.DEVICE_NAME);
+        String settingDeviceName = PreferenceUtils.getString(DEVICE_NAME);
         EditText editText = binding.textInputDeviceName.getEditText();
         editText.setText(settingDeviceName.trim());
 
@@ -106,7 +106,7 @@ public class FragmentSettings extends Fragment {
         updatePSKSettings();
         binding.btnRefreshPsk.setOnClickListener(v -> {
             String randomPsk = PskUtils.getRandomPsk();
-            PreferenceUtils.updatePreference(PreferenceKey.LAST_USED_PSK, randomPsk);
+            PreferenceUtils.updatePreference(LAST_USED_PSK, randomPsk);
             updatePSKSettings();
         });
 
@@ -131,14 +131,14 @@ public class FragmentSettings extends Fragment {
             countClickedAbout++;
             if (countClickedAbout == 3) {
                 String preferenceKey = (String) v.getTag();
-                PreferenceUtils.updatePreference(PreferenceKey.valueOf(preferenceKey), true);
+                PreferenceUtils.updatePreference(valueOf(preferenceKey), true);
                 Toast.makeText(requireContext(), "You have enabled developer settings. Please restart the app.", Toast.LENGTH_LONG).show();
             }
         });
 
         binding.imageViewAbout.setOnLongClickListener(v -> {
             String preferenceKey = (String) v.getTag();
-            PreferenceUtils.updatePreference(PreferenceKey.valueOf(preferenceKey), false);
+            PreferenceUtils.updatePreference(valueOf(preferenceKey), false);
             Toast.makeText(requireContext(), "You have disabled developer settings. Please restart the app.", Toast.LENGTH_LONG).show();
             return true;
         });

@@ -12,6 +12,7 @@ import com.cherrydev.airsend.app.settings.PreferenceUtils;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.security.ProviderInstaller;
+import com.google.gson.Gson;
 
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.conscrypt.Conscrypt;
@@ -29,6 +30,8 @@ public class MyApplication extends Application {
     private static MyApplication INSTANCE;
 
     public static DatabaseManager databaseManager;
+
+    public static Gson GSON = new Gson();
 
 
     public static MyApplication getInstance() {

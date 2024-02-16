@@ -1,8 +1,9 @@
 package com.cherrydev.airsend.app.service;
 
 import static com.cherrydev.airsend.app.MyApplication.databaseManager;
-import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
+import static com.cherrydev.airsend.app.MyApplication.GSON;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PORT;
+import static com.cherrydev.airsend.app.settings.PreferenceKey.LAST_USED_PSK;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.SHOW_NOTIFICATIONS;
 import static com.cherrydev.airsend.app.settings.PreferenceKey.SHOW_NOTIFICATIONS_MESSAGE;
 import static com.cherrydev.airsend.app.utils.IntentAction.ACTION_OPEN_APP;
@@ -13,7 +14,6 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.LinkProperties;
@@ -22,6 +22,8 @@ import android.net.NetworkCapabilities;
 import android.os.Build;
 import android.os.IBinder;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.cherrydev.airsend.R;
 import com.cherrydev.airsend.app.MyApplication;
@@ -38,7 +40,6 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 import io.github.romansj.core.Status;
 import io.github.romansj.core.message.DeviceProperties;
 import io.github.romansj.core.message.Message;
@@ -53,7 +54,8 @@ import timber.log.Timber;
 
 public class ServerService extends Service {
 
-    private static int PORT = 0; //ServerSocket will use first free port
+    public static final String AIRSEND_SERVICE_BROADCAST = "com.cherrydev.airsend.SERVICE_BROADCAST";
+    private static int PORT = 0;
     private static Intent serviceIntent = new Intent(MyApplication.getInstance().getApplicationContext(), ServerService.class);
     private ConnectivityManager.NetworkCallback networkCallback;
 
@@ -72,7 +74,7 @@ public class ServerService extends Service {
         }
 
 
-        Context context = MyApplication.getInstance().getApplicationContext();
+        var context = MyApplication.getInstance().getApplicationContext();
 
 
         PORT = PreferenceUtils.getInt(LAST_USED_PORT); // will be updated with available one shortly
@@ -87,51 +89,11 @@ public class ServerService extends Service {
 
     public static void stopService() {
         stopServer();
-        boolean serviceStopped = MyApplication.getInstance().stopService(serviceIntent);
+
+        var serviceStopped = MyApplication.getInstance().stopService(serviceIntent);
         Timber.d("Service stopped: %s", serviceStopped);
     }
 
-
-    @Override
-    public void onCreate() {
-        Timber.d("service::onCreate()");
-        // startServer();
-
-        initNetworkListener();
-    }
-
-    @SuppressLint("MissingPermission") // Because fake error, permission is present.
-    private void initNetworkListener() {
-        networkCallback = new ConnectivityManager.NetworkCallback() {
-            // The default network is now: 182
-            @Override
-            public void onAvailable(Network network) {
-                startServer();
-            }
-
-            // The application no longer has a default network. The last default network was 182
-            @Override
-            public void onLost(Network network) {
-                stopServer();
-            }
-
-            // The default network changed capabilities: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED LinkUpBandwidth>=465054Kbps LinkDnBandwidth>=367148Kbps SignalStrength: -67 AdministratorUids: [] RequestorUid: -1 RequestorPackageName: null]
-            // The default network changed capabilities: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED LinkUpBandwidth>=465054Kbps LinkDnBandwidth>=367148Kbps SignalStrength: -67 AdministratorUids: [] RequestorUid: -1 RequestorPackageName: null]
-            @Override
-            public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
-                // Log.e("TAG", "The default network changed capabilities: " + networkCapabilities);
-            }
-
-            // The default network changed link properties: {InterfaceName: wlan0 LinkAddresses: [ fe80::2c60:a2ff:fe60:803/64,192.168.1.102/24 ] DnsAddresses: [ /192.168.1.254 ] Domains: null MTU: 0 ServerAddress: /192.168.1.254 TcpBufferSizes: 524288,1048576,4194304,524288,1048576,4194304 Routes: [ fe80::/64 -> :: wlan0 mtu 0,192.168.1.0/24 -> 0.0.0.0 wlan0 mtu 0,0.0.0.0/0 -> 192.168.1.254 wlan0 mtu 0 ]}
-            @Override
-            public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
-                // Log.e("TAG", "The default network changed link properties: " + linkProperties);
-            }
-        };
-
-        ConnectivityManager connectivityManager = getSystemService(ConnectivityManager.class);
-        connectivityManager.registerDefaultNetworkCallback(networkCallback);
-    }
 
 
     private void startServer() {
@@ -142,13 +104,11 @@ public class ServerService extends Service {
         }
 
 
-        int savedPort = PreferenceUtils.getInt(LAST_USED_PORT);
-        savedPort = Math.max(savedPort, 0);
-
-        String savedPsk = PreferenceUtils.getString(LAST_USED_PSK);
+        var savedPort = PreferenceUtils.getInt(LAST_USED_PORT);
+        var savedPsk = PreferenceUtils.getString(LAST_USED_PSK);
 
         //todo shouldnt this be done in server ssl?
-        ServerManager serverManager = ServerManager.getInstance();
+        var serverManager = ServerManager.getInstance();
         try {
             serverManager.setSSLServerSocketFactory(SSLUtils.getSSLServerSocketFactory("hint", savedPsk));
         } catch (Exception e) {
@@ -170,12 +130,22 @@ public class ServerService extends Service {
                 throwable -> Timber.d("serverSSL error: %s", throwable.toString()));
     }
 
-    private void processServerEvent(ServerEvent serverMessage) {
-        if (!serverMessage.getOperation().equals(ServerOperation.LISTEN)) return;
+    private void processServerEvent(ServerEvent event) {
+        var intent = new Intent();
+        intent.setAction(AIRSEND_SERVICE_BROADCAST);
+
+        intent.putExtra("event", GSON.toJson(event));
+        sendBroadcast(intent);
 
 
-        PORT = serverMessage.getPort(); //only update in case of listen because EVENT also receives callback about individual server sockets working with their single clients
+        updateLastUsedPort(event);
+    }
 
+    private void updateLastUsedPort(ServerEvent event) {
+        if (!event.getOperation().equals(ServerOperation.LISTEN)) return;
+
+        // only update in case of listen because ServerEvent also receives callback about individual server sockets working with their single clients
+        PORT = event.getPort();
         PreferenceUtils.updatePreference(LAST_USED_PORT, PORT);
     }
 
@@ -186,53 +156,78 @@ public class ServerService extends Service {
 
 
     private void processServerMessage(Message message) {
-        String text = message.getUserMessage();
-        String ip = message.getIP();
-        Timber.d("SERVER MSSG: " + ip + ", :" + text);
+        Timber.d("SERVER MSSG: " + message.getIP() + ", :" + message.getUserMessage());
 
-        MessageType type = message.getType();
-        if (message.isConnectionType()) {
-            boolean showConnectNotifications = PreferenceUtils.getBoolean(SHOW_NOTIFICATIONS);
-            if (showConnectNotifications) {
-                String messageText = type == MessageType.CONNECT ? getString(R.string.connected) : getString(R.string.disconnected);
-                NotificationUtils.showNotification(ip, messageText);
-            }
+        addDevice(message);
 
+        copyTextToClipboard(message);
 
-            DeviceProperties ownerProperties = DeviceProperties.fromReceived(text);
-            if (ownerProperties != null) {
-                Device device = new Device(ownerProperties.getName(), ip, ownerProperties.getPort(), ownerProperties.getClientType(), message.getType() == MessageType.CONNECT ? Status.RUNNING : Status.NOT_RUNNING);
-                databaseManager.addDevice(device).runInBackground().run();
-            }
+        showNotification(message);
 
-        } else {
-            ClipboardUtils.copyToClipboard(this, text);
-            boolean showMessageNotifications = PreferenceUtils.getBoolean(SHOW_NOTIFICATIONS_MESSAGE);
-            if (showMessageNotifications) NotificationUtils.showNotification(ip, text);
-        }
+        saveMessageInDb(message);
+    }
 
+    private void addDevice(Message message) {
+        if (!message.isConnectionType()) return;
+
+        var text = message.getTransferMessage();
+        var ip = message.getIP();
+
+        var deviceProperties = DeviceProperties.fromReceived(text);
+        var status = getDeviceStatus(message);
+
+        saveDeviceInDb(deviceProperties, ip, status);
+    }
+
+    @NonNull
+    private Status getDeviceStatus(Message message) {
+        return message.getType() == MessageType.CONNECT ? Status.RUNNING : Status.NOT_RUNNING;
+    }
+
+    private void saveMessageInDb(Message message) {
+        var ip = message.getIP();
 
         executorService.submit(() -> {
             var device = databaseManager.findDeviceByIP(ip);
-            UserMessage userMessage = new UserMessage(ip, device != null ? device.getPort() : message.getPort(), text, type, message.getDateTime());
+            var userMessage = new UserMessage(message, device);
             databaseManager.addMessage(userMessage).run();
         });
+    }
+
+    private void copyTextToClipboard(Message message) {
+        if (message.isConnectionType()) return;
+
+        var text = message.getUserMessage();
+        ClipboardUtils.copyToClipboard(this, text);
+    }
+
+    private void saveDeviceInDb(DeviceProperties deviceProperties, String ip, Status status) {
+        if (deviceProperties == null) return;
+
+        var device = new Device(deviceProperties.getName(), ip, deviceProperties.getPort(), deviceProperties.getClientType(), status);
+        databaseManager.addDevice(device).runInBackground().run();
+    }
+
+
+    void showNotification(Message message) {
+        var ip = message.getIP();
+
+        var showConnectNotifications = PreferenceUtils.getBoolean(SHOW_NOTIFICATIONS);
+        if (showConnectNotifications) {
+            var text = message.getType() == MessageType.CONNECT ? getString(R.string.connected) : getString(R.string.disconnected);
+            NotificationUtils.showNotification(ip, text);
+        }
+
+        var showMessageNotifications = PreferenceUtils.getBoolean(SHOW_NOTIFICATIONS_MESSAGE);
+        if (showMessageNotifications) {
+            var text = message.getUserMessage();
+            NotificationUtils.showNotification(ip, text);
+        }
     }
 
 
     public static int getPORT() {
         return PORT;
-    }
-
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        Timber.d("service starting");
-
-        initServerNotification(flags);
-
-        // If we get killed, after returning from here, restart
-        return START_STICKY;
     }
 
     private void initServerNotification(int flags) {
@@ -267,6 +262,26 @@ public class ServerService extends Service {
         return null; // We don't provide binding, so return null
     }
 
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        Timber.d("service starting");
+
+        initServerNotification(flags);
+
+        // If we get killed, after returning from here, restart
+        return START_STICKY;
+    }
+
+
+    @Override
+    public void onCreate() {
+        Timber.d("service::onCreate()");
+
+        initNetworkListener();
+    }
+
+
     @Override
     public void onDestroy() {
         PORT = 0;
@@ -277,5 +292,38 @@ public class ServerService extends Service {
 
         ConnectivityManager connectivityManager = getSystemService(ConnectivityManager.class);
         connectivityManager.unregisterNetworkCallback(networkCallback);
+    }
+
+    @SuppressLint("MissingPermission") // Because fake error, permission is present.
+    private void initNetworkListener() {
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            // The default network is now: 182
+            @Override
+            public void onAvailable(Network network) {
+                startServer();
+            }
+
+            // The application no longer has a default network. The last default network was 182
+            @Override
+            public void onLost(Network network) {
+                stopServer();
+            }
+
+            // The default network changed capabilities: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED LinkUpBandwidth>=465054Kbps LinkDnBandwidth>=367148Kbps SignalStrength: -67 AdministratorUids: [] RequestorUid: -1 RequestorPackageName: null]
+            // The default network changed capabilities: [ Transports: WIFI Capabilities: NOT_METERED&INTERNET&NOT_RESTRICTED&TRUSTED&NOT_VPN&VALIDATED&NOT_ROAMING&FOREGROUND&NOT_CONGESTED&NOT_SUSPENDED LinkUpBandwidth>=465054Kbps LinkDnBandwidth>=367148Kbps SignalStrength: -67 AdministratorUids: [] RequestorUid: -1 RequestorPackageName: null]
+            @Override
+            public void onCapabilitiesChanged(Network network, NetworkCapabilities networkCapabilities) {
+                // Log.e("TAG", "The default network changed capabilities: " + networkCapabilities);
+            }
+
+            // The default network changed link properties: {InterfaceName: wlan0 LinkAddresses: [ fe80::2c60:a2ff:fe60:803/64,192.168.1.102/24 ] DnsAddresses: [ /192.168.1.254 ] Domains: null MTU: 0 ServerAddress: /192.168.1.254 TcpBufferSizes: 524288,1048576,4194304,524288,1048576,4194304 Routes: [ fe80::/64 -> :: wlan0 mtu 0,192.168.1.0/24 -> 0.0.0.0 wlan0 mtu 0,0.0.0.0/0 -> 192.168.1.254 wlan0 mtu 0 ]}
+            @Override
+            public void onLinkPropertiesChanged(Network network, LinkProperties linkProperties) {
+                // Log.e("TAG", "The default network changed link properties: " + linkProperties);
+            }
+        };
+
+        ConnectivityManager connectivityManager = getSystemService(ConnectivityManager.class);
+        connectivityManager.registerDefaultNetworkCallback(networkCallback);
     }
 }

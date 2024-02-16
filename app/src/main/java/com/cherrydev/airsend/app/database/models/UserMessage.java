@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey;
 
 import com.cherrydev.airsend.app.messages.IMessage;
 
+import io.github.romansj.core.message.Message;
 import io.github.romansj.core.message.MessageType;
 
 
@@ -22,8 +23,7 @@ public class UserMessage implements IMessage {
     private long dateTime;
 
 
-    public UserMessage() {
-    }
+    public UserMessage() {}
 
     public UserMessage(String ip, int port, String userMessage, MessageType type, long dateTime) {
         this.IP = ip;
@@ -31,6 +31,10 @@ public class UserMessage implements IMessage {
         this.text = userMessage;
         this.type = type;
         this.dateTime = dateTime;
+    }
+
+    public UserMessage(Message message, Device device) {
+        this(message.getIP(), device != null ? device.getPort() : message.getPort(), message.getUserMessage(), message.getType(), message.getDateTime());
     }
 
     public String getIP() {

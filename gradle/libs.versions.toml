@@ -4,6 +4,7 @@ commonToolsVersion = "1.0.0"
 coreJavaVersion = "3.0.2"
 
 commonsLang3Version = "3.13.0"
+gsonVersion = "2.10.1"
 guavaVersion = "31.0.1-android"
 
 desugar_jdk_libsVersion = "2.0.4"
@@ -60,6 +61,7 @@ airsend-core-java = { module = "io.github.romansj.airsend:core-java", version.re
 commons-text = { module = "org.apache.commons:commons-text", version.ref = "commonsTextVersion" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref = "commonsLang3Version" }
 guava = { module = "com.google.guava:guava", version.ref = "guavaVersion" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gsonVersion" }
 
 androidx-core = { module = "androidx.test:core", version.ref = "coreVersion" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }

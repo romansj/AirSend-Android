@@ -18,9 +18,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import io.github.romansj.core.message.MessageType;
+import io.github.romansj.core.server.ServerEvent;
 
 
 public class AppViewModel extends ViewModel {
+    private MutableLiveData<ServerEvent> serverEventMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<String> textToSend = new MutableLiveData<>();
     private LiveData<List<UserMessage>> serverMessages;
     private MutableLiveData<Boolean> needToCopyClipboard = new MutableLiveData<>();
@@ -38,6 +40,10 @@ public class AppViewModel extends ViewModel {
 
     }
 
+
+    public MutableLiveData<ServerEvent> getServerEventMutableLiveData() {
+        return serverEventMutableLiveData;
+    }
 
     public MutableLiveData<String> getTextToSend() {
         return textToSend;

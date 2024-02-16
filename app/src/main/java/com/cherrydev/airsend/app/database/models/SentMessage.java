@@ -39,7 +39,7 @@ public class SentMessage implements IMessage {
     public SentMessage(Message message) {
         this.IP = message.getIP();
         this.port = message.getPort();
-        this.transferMessage = message.getMessage();
+        this.transferMessage = message.getTransferMessage();
         this.userMessage = message.getUserMessage();
         this.type = message.getType();
 
