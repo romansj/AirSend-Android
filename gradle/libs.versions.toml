@@ -45,6 +45,9 @@ rxandroid = "3.0.0"
 rxbinding = "4.0.0"
 rxjava = "3.0.3"
 uiautomatorVersion = "2.2.0"
+agpVersion = "8.2.2"
+benchmarkVersion = "1.2.3"
+benchmarkJunit4Version = "1.2.3"
 
 
 
@@ -119,6 +122,7 @@ androidx-room-rxjava3 = { module = "androidx.room:room-rxjava3", version.ref = "
 
 logback-android = { module = "com.github.tony19:logback-android", version.ref = "logbackAndroidVersion" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApiVersion" }
+androidx-benchmark-junit4 = { group = "androidx.benchmark", name = "benchmark-junit4", version.ref = "benchmarkJunit4Version" }
 
 [bundles]
 espresso = [
@@ -132,3 +136,5 @@ espresso = [
 ]
 
 [plugins]
+android-library = { id = "com.android.library", version.ref = "agpVersion" }
+benchmark = { id = "androidx.benchmark", version.ref = "benchmarkVersion" }
