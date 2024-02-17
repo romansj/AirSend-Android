@@ -86,10 +86,6 @@ dependencies {
     androidTestImplementation libs.androidx.junit
 
 
-    androidTestImplementation libs.mockito.core
-    androidTestImplementation libs.dexmaker.mockito
-
-
     //androidx test
     testImplementation(libs.androidx.core) {
         exclude group: 'xpp3', module: 'xpp3'
