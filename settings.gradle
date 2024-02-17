@@ -15,7 +15,6 @@ dependencyResolutionManagement {
         mavenLocal()
         maven { url 'https://jitpack.io' }
         maven { url "https://oss.jfrog.org/libs-snapshot" }
-        jcenter()
     }
 }
 
@@ -23,7 +22,6 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 rootProject.name = 'AirSend'
 include ':app'
-//include ':AirSendCore'
 include ':benchmark'
 
 
